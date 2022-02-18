@@ -27,7 +27,7 @@ class _UsersTabState extends State<UsersTab> {
 
   @override
   void didChangeDependencies() {
-    BlocProvider.of<UserBloc>(context).add(FetchAllUsers());
+    BlocProvider.of<UserBloc>(context).add(FetchAllUsers('UserType.Person'));
     super.didChangeDependencies();
   }
 
@@ -36,11 +36,12 @@ class _UsersTabState extends State<UsersTab> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        width: double.maxFinite,
-        height: double.maxFinite,
-        padding: const EdgeInsets.only(right: 10, top: 20, bottom: 20),
-        color: MyColors.primaryColor,
-        child: Column(children: [
+      width: double.maxFinite,
+      height: double.maxFinite,
+      padding: const EdgeInsets.only(right: 10, top: 20, bottom: 20),
+      color: MyColors.primaryColor,
+      child: Column(
+        children: [
           SizedBox(
             child: Form(
               key: formKey,
@@ -89,16 +90,6 @@ class _UsersTabState extends State<UsersTab> {
                 children: [
                   BlocBuilder<UserBloc, UserStates>(builder: (context, state) {
                     if (state is UserDoneState) {
-                      state.model.allusers.sort((a, b) {
-                        if (a.points > b.points) {
-                          return -1;
-                        } else if (a.points == b.points) {
-                          return 0;
-                        } else {
-                          return 1;
-                        }
-                      });
-
                       OneUserModel mostBuy = state.model.allusers.first;
                       return Container(
                         width: double.maxFinite,
@@ -141,6 +132,8 @@ class _UsersTabState extends State<UsersTab> {
               ),
             ),
           )
-        ]));
+        ],
+      ),
+    );
   }
 }

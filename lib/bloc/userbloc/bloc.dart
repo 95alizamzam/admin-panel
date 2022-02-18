@@ -13,7 +13,8 @@ class UserBloc extends Bloc<UserEvents, UserStates> {
         emit(UserLoadingState());
 
         try {
-          final data = await locator.get<UserRepo>().getAllUsers();
+          final data =
+              await locator.get<UserRepo>().getAllUsers(filter: event.filter);
           UsersModel model = UsersModel.fromJson(data.docs);
 
           emit(UserDoneState(model));

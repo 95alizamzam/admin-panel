@@ -1,11 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class OffersRepo {
-// get all added categories
-
-  Future<QuerySnapshot<Map<String, dynamic>>> getAllOffers() async {
+  Future<QuerySnapshot<Map<String, dynamic>>> getAllOffers(String type) async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
-    final offers = firestore.collection('offers').get();
-    return offers;
+
+    return await firestore
+        .collection('offers')
+        .where('offerType', isEqualTo: type)
+        .get();
   }
 }

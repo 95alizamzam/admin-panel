@@ -4,9 +4,7 @@ import 'package:marketing_admin_panel/UI/categories_tab/categories_tab.dart';
 import 'package:marketing_admin_panel/UI/offers_tab/offers_tab.dart';
 import 'package:marketing_admin_panel/UI/users_company_tab/companies.dart';
 import 'package:marketing_admin_panel/UI/users_person_tab/users_tab.dart';
-import 'package:marketing_admin_panel/bloc/category_bloc/states.dart';
 import 'package:marketing_admin_panel/bloc/changeLeftPart/bloc.dart';
-import 'package:marketing_admin_panel/bloc/changeLeftPart/events.dart';
 import 'package:marketing_admin_panel/bloc/changeLeftPart/states.dart';
 import 'package:marketing_admin_panel/utils/colors.dart';
 

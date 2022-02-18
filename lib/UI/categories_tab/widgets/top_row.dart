@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:marketing_admin_panel/UI/categories_tab/widgets/modalSheetContent.dart';
+import 'package:marketing_admin_panel/utils/colors.dart';
 
 class TopRow extends StatelessWidget {
   const TopRow({Key? key}) : super(key: key);
@@ -13,7 +14,7 @@ class TopRow extends StatelessWidget {
           child: Text(
             'Available Categories',
             style: TextStyle(
-              color: Colors.white,
+              color: MyColors.secondaryColor,
               fontSize: 32,
               fontWeight: FontWeight.bold,
             ),

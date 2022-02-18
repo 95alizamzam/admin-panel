@@ -16,9 +16,7 @@ class UsersList extends StatelessWidget {
     return BlocBuilder<UserBloc, UserStates>(
       builder: (context, state) {
         if (state is UserDoneState) {
-          List<OneUserModel> users = state.model.allusers
-              .where((element) => element.userType == 'Person')
-              .toList();
+          List<OneUserModel> users = state.model.allusers;
           return Expanded(
             flex: 2,
             child: SizedBox(

@@ -62,7 +62,8 @@ class _CategoriesTabState extends State<CategoriesTab> {
             ),
           );
         } else {
-          return Padding(
+          return Container(
+            color: MyColors.primaryColor,
             padding: const EdgeInsets.only(top: 20, bottom: 20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -77,7 +78,7 @@ class _CategoriesTabState extends State<CategoriesTab> {
                 ),
                 Content(
                   selectedCategory: selectedCategory,
-                  subCat: subcategories,
+                  subCat: data1.isEmpty ? [] : subcategories,
                 ),
               ],
             ),

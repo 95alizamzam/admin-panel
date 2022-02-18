@@ -2,7 +2,6 @@
     package="com.example.marketing_admin_panel">
    <application
         android:label="marketing_admin_panel"
-        android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

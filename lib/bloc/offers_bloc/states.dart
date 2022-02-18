@@ -1,11 +1,31 @@
+import 'package:marketing_admin_panel/models/image_offer_model.dart';
+import 'package:marketing_admin_panel/models/product_offer_model.dart';
 import 'package:marketing_admin_panel/models/usersModel.dart';
 
 abstract class OfferStates {}
 
-class OfferInitialState extends OfferStates {}
+class FetchOfferInitialState extends OfferStates {}
 
-class OfferLoadingState extends OfferStates {}
+class FetchOfferLoadingState extends OfferStates {}
 
-class OfferDoneState extends OfferStates {}
+class FetchOfferImagesDoneState extends OfferStates {
+  final ImagesOffer model;
+  FetchOfferImagesDoneState(this.model);
+}
 
-class OfferFiledState extends OfferStates {}
+class FetchOfferPostDoneState extends OfferStates {
+  final ImagesOffer model;
+  FetchOfferPostDoneState(this.model);
+}
+
+class FetchOfferProductDoneState extends OfferStates {
+  final ProductsOffersModel model;
+  FetchOfferProductDoneState(this.model);
+}
+
+class FetchOfferVideoDoneState extends OfferStates {
+  final ImagesOffer model;
+  FetchOfferVideoDoneState(this.model);
+}
+
+class FetchOfferFiledState extends OfferStates {}

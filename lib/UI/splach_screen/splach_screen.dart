@@ -55,7 +55,7 @@ class _SplashScreenState extends State<SplashScreen> {
                       width: 200,
                       ontap: () {
                         navigatorImp().push(
-                          NamedRoutes.LOGIN_SCREEN,
+                          NamedRoutes.HOME_SCREEN,
                           clean: true,
                         );
                       },

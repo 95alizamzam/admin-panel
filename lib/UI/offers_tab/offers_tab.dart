@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:marketing_admin_panel/UI/offers_tab/widgets/image_offers.dart';
+import 'package:marketing_admin_panel/UI/offers_tab/widgets/post_offers.dart';
 import 'package:marketing_admin_panel/UI/offers_tab/widgets/product_offer.dart';
+import 'package:marketing_admin_panel/UI/offers_tab/widgets/video_offers.dart';
 import 'package:marketing_admin_panel/bloc/offers_bloc/bloc.dart';
 import 'package:marketing_admin_panel/bloc/offers_bloc/events.dart';
 import 'package:marketing_admin_panel/utils/colors.dart';
@@ -19,6 +21,8 @@ class _OffersTabState extends State<OffersTab> {
   List<Widget> content = [
     const ProductOffer(),
     const ImageOffer(),
+    const PostOffer(),
+    const VideoOffer(),
   ];
 
   @override
@@ -46,12 +50,12 @@ class _OffersTabState extends State<OffersTab> {
                 text: 'images offer',
               ),
               Tab(
-                icon: Icon(Icons.video_collection_outlined),
-                text: 'videos offer',
-              ),
-              Tab(
                 icon: Icon(Icons.post_add_outlined),
                 text: 'posts offer',
+              ),
+              Tab(
+                icon: Icon(Icons.video_collection_outlined),
+                text: 'videos offer',
               ),
             ],
             indicator: const BoxDecoration(

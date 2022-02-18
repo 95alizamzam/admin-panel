@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:marketing_admin_panel/UI/shared_widgets/custom_button.dart';
 import 'package:marketing_admin_panel/bloc/category_bloc/change_bloc.dart';
 import 'package:marketing_admin_panel/bloc/category_bloc/events.dart';
 import 'package:marketing_admin_panel/utils/colors.dart';
@@ -145,7 +146,7 @@ class _ModalContentState extends State<ModalContent> {
               ),
             ),
             const SizedBox(height: 20),
-            SharedWidgets.customButton(
+            CustomButton(
               ontap: () {
                 if (newCats.isEmpty || con.text.isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(

@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:marketing_admin_panel/UI/shared_widgets/custom_button.dart';
 import 'package:marketing_admin_panel/utils/colors.dart';
 import 'package:marketing_admin_panel/utils/constants.dart';
 import 'package:marketing_admin_panel/utils/navigator/named_routes.dart';
 import 'package:marketing_admin_panel/utils/navigator/navigator_imp.dart';
 import 'package:marketing_admin_panel/utils/shared_widgets.dart';
 
-class SplachScreen extends StatefulWidget {
+class SplashScreen extends StatefulWidget {
   final navigator;
-  const SplachScreen({Key? key, this.navigator}) : super(key: key);
+  const SplashScreen({Key? key, this.navigator}) : super(key: key);
 
   @override
-  State<SplachScreen> createState() => _SplachScreenState();
+  State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplachScreenState extends State<SplachScreen> {
+class _SplashScreenState extends State<SplashScreen> {
   bool isLoading = true;
   void timer() {
     Future.delayed(const Duration(seconds: 2), () {
@@ -50,11 +51,11 @@ class _SplachScreenState extends State<SplachScreen> {
                   ? const CircularProgressIndicator(
                       color: MyColors.lightBlue,
                     )
-                  : SharedWidgets.customButton(
+                  : CustomButton(
                       width: 200,
                       ontap: () {
                         navigatorImp().push(
-                          NamedRoutes.HOME_SCREEN,
+                          NamedRoutes.LOGIN_SCREEN,
                           clean: true,
                         );
                       },

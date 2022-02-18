@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:marketing_admin_panel/UI/shared_widgets/default_image.dart';
 import 'package:marketing_admin_panel/bloc/userbloc/bloc.dart';
 import 'package:marketing_admin_panel/bloc/userbloc/states.dart';
 import 'package:marketing_admin_panel/models/usersModel.dart';
@@ -34,11 +35,9 @@ class UsersList extends StatelessWidget {
                         CircleAvatar(
                           radius: 35,
                           backgroundColor: Colors.grey.shade300,
-                          backgroundImage: users[index].profileImage == ''
-                              ? SharedWidgets.defaultImage().image
-                              : NetworkImage(
-                                  users[index].profileImage.toString()),
-                        ),
+                          child: users[index].profileImage == ''
+                              ? DefaultImage()
+                              : Image.network(users[index].profileImage.toString())),
                         const SizedBox(width: 20),
                         Expanded(
                           child: Column(

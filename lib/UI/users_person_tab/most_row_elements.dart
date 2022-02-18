@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:marketing_admin_panel/UI/shared_widgets/default_image.dart';
 import 'package:marketing_admin_panel/utils/constants.dart';
 import 'package:marketing_admin_panel/utils/shared_widgets.dart';
 
@@ -35,7 +36,7 @@ class RowElement extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               userImage == ""
-                  ? SharedWidgets.defaultImage()
+                  ? DefaultImage()
                   : ClipRRect(
                       borderRadius: BorderRadius.circular(15),
                       child: Image(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:marketing_admin_panel/UI/home_screen/home_screen.dart';
+import 'package:marketing_admin_panel/UI/login_screen/login_screen.dart';
 import 'package:marketing_admin_panel/UI/splach_screen/splach_screen.dart';
 import 'package:marketing_admin_panel/UI/users_person_tab/user_details_screen.dart';
 import 'package:marketing_admin_panel/models/usersModel.dart';
@@ -15,7 +16,16 @@ class navigatorImp implements NamedNavigator {
     switch (settings.name) {
       case NamedRoutes.SPLASH_SCREEN:
         return PageTransition(
-          child: SplachScreen(
+          child: SplashScreen(
+            navigator: navigatorState,
+          ),
+          type: PageTransitionType.bottomToTop,
+          duration: const Duration(milliseconds: 500),
+        );
+
+      case NamedRoutes.LOGIN_SCREEN:
+        return PageTransition(
+          child: LoginScreen(
             navigator: navigatorState,
           ),
           type: PageTransitionType.bottomToTop,
@@ -47,7 +57,7 @@ class navigatorImp implements NamedNavigator {
 
       default:
         return MaterialPageRoute(
-          builder: (_) => SplachScreen(
+          builder: (_) => SplashScreen(
             navigator: navigatorState,
           ),
         );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:marketing_admin_panel/UI/shared_widgets/default_image.dart';
 import 'package:marketing_admin_panel/models/usersModel.dart';
 import 'package:marketing_admin_panel/utils/colors.dart';
 import 'package:marketing_admin_panel/utils/navigator/navigator_imp.dart';
@@ -36,12 +37,8 @@ class UserDetails extends StatelessWidget {
                 const SizedBox(height: 20),
                 CircleAvatar(
                   radius: 75,
-                  backgroundImage: model.profileImage == ''
-                      ? SharedWidgets.defaultImage().image
-                      : NetworkImage(
-                          model.profileImage.toString(),
-                        ),
-                ),
+                  child: model.profileImage == '' ? DefaultImage() : Image.network(model.profileImage.toString(),),
+                  ),
                 const SizedBox(height: 10),
                 Text(
                   model.userName!,

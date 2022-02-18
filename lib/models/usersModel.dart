@@ -13,6 +13,7 @@ class OneUserModel {
   List<dynamic>? comments = [];
   List<dynamic>? offersLiked = [];
 
+
   String? country;
   String? dateBirth;
 

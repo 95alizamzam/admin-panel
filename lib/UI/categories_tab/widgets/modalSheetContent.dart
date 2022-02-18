@@ -152,6 +152,7 @@ class _ModalContentState extends State<ModalContent> {
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                     backgroundColor: Colors.red,
                     content: const Text(
+
                       'Empty Fields',
                       style: TextStyle(color: Colors.white),
                     ),

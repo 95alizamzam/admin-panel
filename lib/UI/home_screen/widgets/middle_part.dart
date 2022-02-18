@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:marketing_admin_panel/UI/home_screen/widgets/Tabs/categories_tab.dart';
-import 'package:marketing_admin_panel/UI/home_screen/widgets/Tabs/offers_tab.dart';
-import 'package:marketing_admin_panel/UI/home_screen/widgets/Tabs/user_tab/users_tab.dart';
-import 'package:marketing_admin_panel/bloc/bloc.dart';
-import 'package:marketing_admin_panel/bloc/states.dart';
+import 'package:marketing_admin_panel/UI/categories_tab/categories_tab.dart';
+import 'package:marketing_admin_panel/UI/offers_tab/offers_tab.dart';
+import 'package:marketing_admin_panel/UI/users_company_tab/companies.dart';
+import 'package:marketing_admin_panel/UI/users_person_tab/users_tab.dart';
+import 'package:marketing_admin_panel/bloc/category_bloc/states.dart';
+import 'package:marketing_admin_panel/bloc/changeLeftPart/bloc.dart';
+import 'package:marketing_admin_panel/bloc/changeLeftPart/events.dart';
+import 'package:marketing_admin_panel/bloc/changeLeftPart/states.dart';
 import 'package:marketing_admin_panel/utils/colors.dart';
 
 class MiddlePart extends StatelessWidget {
   List<Widget> tabs = [
-    UsersTab(),
+    const UsersTab(),
+    const CompaniesUsers(),
     const CategoriesTab(),
     const OffersTab(),
-    const CategoriesTab(),
   ];
 
   int currentIndex = 0;
@@ -26,23 +29,13 @@ class MiddlePart extends StatelessWidget {
         }
       },
       builder: (context, state) {
-        if (state is PanelChangeBodyDoneState) {
-          return Expanded(
-            flex: 3,
-            child: Container(
-              color: MyColors.lightGrey,
-              child: tabs[currentIndex],
-            ),
-          );
-        } else {
-          return Expanded(
-            flex: 3,
-            child: Container(
-              color: MyColors.lightGrey,
-              child: tabs[0],
-            ),
-          );
-        }
+        return Expanded(
+          flex: 3,
+          child: Container(
+            color: MyColors.lightGrey,
+            child: tabs[currentIndex],
+          ),
+        );
       },
     );
   }

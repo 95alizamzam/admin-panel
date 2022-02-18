@@ -9,12 +9,15 @@ class SharedWidgets {
     required double radius,
     required Color labelColor,
     required double labelSize,
+    required double width,
   }) {
     return GestureDetector(
       onTap: () {
         ontap();
       },
       child: Container(
+        alignment: Alignment.center,
+        width: width,
         padding: EdgeInsets.all(padding),
         decoration: BoxDecoration(
           color: MyColors.lightBlue,
@@ -28,6 +31,15 @@ class SharedWidgets {
           ),
         ),
       ),
+    );
+  }
+
+  static Image defaultImage() {
+    return Image.asset(
+      'images/default_user_image.png',
+      fit: BoxFit.cover,
+      width: 120,
+      height: 120,
     );
   }
 }

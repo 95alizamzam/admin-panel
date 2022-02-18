@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:marketing_admin_panel/bloc/bloc.dart';
-import 'package:marketing_admin_panel/bloc/events.dart';
+import 'package:marketing_admin_panel/bloc/changeLeftPart/bloc.dart';
+import 'package:marketing_admin_panel/bloc/changeLeftPart/events.dart';
+
 import 'package:marketing_admin_panel/utils/colors.dart';
 import 'package:marketing_admin_panel/utils/constants.dart';
 
 class LeftPart extends StatefulWidget {
-  LeftPart({Key? key}) : super(key: key);
+  const LeftPart({Key? key}) : super(key: key);
 
   @override
   State<LeftPart> createState() => _LeftPartState();
@@ -45,6 +46,7 @@ class _LeftPartState extends State<LeftPart> {
         child: SingleChildScrollView(
           child: Column(
             children: List.generate(drawerItems.length, (index) {
+              // drawer header
               if (index == 0) {
                 return Container(
                   alignment: Alignment.center,
@@ -74,28 +76,31 @@ class _LeftPartState extends State<LeftPart> {
                       .add(ChangeIndexEvents(index - 1));
                 },
                 child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 6),
-                  color: currentIndex == index
-                      ? MyColors.lightGrey.withOpacity(0.4)
-                      : MyColors.primaryColor,
-                  margin: const EdgeInsets.only(bottom: 10),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    color: currentIndex == index
+                        ? MyColors.lightBlue
+                        : MyColors.grey,
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  margin: const EdgeInsets.only(bottom: 20),
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
+                      const SizedBox(width: 20),
                       Icon(
                         drawerItems[index]['icon'],
-                        color: currentIndex == index
-                            ? MyColors.primaryColor
-                            : MyColors.lightBlue,
+                        size: 20,
+                        color: MyColors.primaryColor,
                       ),
-                      const SizedBox(width: 8),
-                      Text(drawerItems[index]['title'],
-                          style: TextStyle(
-                            color: currentIndex == index
-                                ? MyColors.primaryColor
-                                : MyColors.lightBlue,
-                            fontSize: 14,
-                          )),
-                      const Spacer(),
+                      const SizedBox(width: 10),
+                      Text(
+                        drawerItems[index]['title'],
+                        style: const TextStyle(
+                          color: MyColors.primaryColor,
+                          fontSize: 18,
+                        ),
+                      ),
                     ],
                   ),
                 ),

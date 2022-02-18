@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:marketing_admin_panel/UI/home_screen/home_screen.dart';
 import 'package:marketing_admin_panel/UI/splach_screen/splach_screen.dart';
+import 'package:marketing_admin_panel/UI/users_person_tab/user_details_screen.dart';
+import 'package:marketing_admin_panel/models/usersModel.dart';
 import 'package:marketing_admin_panel/utils/navigator/named_navigator.dart';
 import 'package:marketing_admin_panel/utils/navigator/named_routes.dart';
 import 'package:page_transition/page_transition.dart';
@@ -28,6 +30,20 @@ class navigatorImp implements NamedNavigator {
           type: PageTransitionType.bottomToTop,
           duration: const Duration(milliseconds: 500),
         );
+
+      case NamedRoutes.UserDetails:
+        {
+          final data = settings.arguments as Map<String, dynamic>;
+
+          return PageTransition(
+            child: UserDetails(
+              navigator: navigatorState,
+              model: data['user'],
+            ),
+            type: PageTransitionType.bottomToTop,
+            duration: const Duration(milliseconds: 500),
+          );
+        }
 
       default:
         return MaterialPageRoute(

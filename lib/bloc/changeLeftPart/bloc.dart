@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
-import 'package:marketing_admin_panel/bloc/events.dart';
-import 'package:marketing_admin_panel/bloc/states.dart';
+
+import 'events.dart';
+import 'states.dart';
 
 class PanelBloc extends Bloc<PanelEvents, PanelStates> {
   PanelBloc() : super(PanelInitialStates()) {

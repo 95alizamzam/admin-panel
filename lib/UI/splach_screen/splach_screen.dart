@@ -51,6 +51,7 @@ class _SplachScreenState extends State<SplachScreen> {
                       color: MyColors.lightBlue,
                     )
                   : SharedWidgets.customButton(
+                      width: 200,
                       ontap: () {
                         navigatorImp().push(
                           NamedRoutes.HOME_SCREEN,

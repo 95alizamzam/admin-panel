@@ -4,4 +4,5 @@ class NamedRoutes {
   //INTRO
   static const SPLASH_SCREEN = "SPLASH_SCREEN";
   static const HOME_SCREEN = "HOME_SCREEN";
+  static const UserDetails = "UserDetails";
 }

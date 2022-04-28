@@ -5,6 +5,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:marketing_admin_panel/UI/shared_widgets/default_image.dart';
 import 'package:marketing_admin_panel/UI/users_person_tab/widgets/package_chip.dart';
+import 'package:marketing_admin_panel/UI/users_person_tab/widgets/send_points_widget.dart';
 import 'package:marketing_admin_panel/utils/enums.dart';
 import '../shared_widgets/images_list_view.dart';
 import 'widgets/user_info_row.dart';
@@ -24,6 +25,10 @@ class UserDetails extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('${user.userName}'),
+        actions: [
+          if(user.userType != UserType.Guest.toString())
+            SendPointsWidget(userId: user.id!),
+        ],
       ),
       body: Column(
         children: [

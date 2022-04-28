@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:marketing_admin_panel/bloc/offers_bloc/bloc.dart';
 import 'package:marketing_admin_panel/bloc/offers_bloc/events.dart';
 import 'package:marketing_admin_panel/bloc/offers_bloc/states.dart';
-import 'package:marketing_admin_panel/models/image_offer_model.dart';
 import 'package:marketing_admin_panel/utils/colors.dart';
+import 'package:marketing_admin_panel/utils/constants.dart';
+import 'package:intl/intl.dart' show DateFormat;
+import 'package:marketing_admin_panel/utils/navigator/named_routes.dart';
+import 'package:marketing_admin_panel/utils/navigator/navigator_imp.dart';
 
 class ImageOffer extends StatefulWidget {
-  const ImageOffer({Key? key}) : super(key: key);
+  final offerOwnerType;
+  const ImageOffer({Key? key, required this.offerOwnerType}) : super(key: key);
 
   @override
   State<ImageOffer> createState() => _ImageOfferState();
@@ -15,55 +21,199 @@ class ImageOffer extends StatefulWidget {
 
 class _ImageOfferState extends State<ImageOffer> {
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    BlocProvider.of<OfferBloc>(context).add(FetchAllOffers('OfferType.Image'));
+  void initState() {
+    BlocProvider.of<OfferBloc>(context)
+        .add(FetchAllOffers('OfferType.Image', widget.offerOwnerType));
+    super.initState();
   }
 
-  List<OneImageOffer> data = [];
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<OfferBloc, OfferStates>(
-      builder: (context, state) {
-        if (state is FetchOfferImagesDoneState) {
-          data = state.model.allImageOffers;
-        }
-        return Container(
-          width: double.maxFinite,
-          height: double.maxFinite,
-          child: ListView.separated(
-            itemBuilder: (context, index) => OfferImageItem(
-              offer: data[index],
-            ),
-            separatorBuilder: (context, index) => SizedBox(height: 10),
-            itemCount: data.length,
-          ),
-        );
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+    return BlocConsumer<OfferBloc, OfferStates>(
+      listener: (ctx, state) {
+        if (state is DeleteOfferLoading)
+          EasyLoading.show(status: 'Please wait');
+        else if (state is DeleteOfferFailed)
+          EasyLoading.showError(state.message);
+        else if (state is DeleteOfferSucceed)
+          EasyLoading.showSuccess('Offer Deleted');
       },
-    );
-  }
-}
+      builder: (ctx, state) {
+        if (state is FetchOfferLoadingState || state is FetchOfferInitialState)
+          return Center(
+            child: CircularProgressIndicator(
+              color: MyColors.secondaryColor,
+            ),
+          );
+        else if (state is FetchOfferFiledState)
+          return Center(
+            child: Text(
+              state.message,
+              style: Constants.TEXT_STYLE9,
+            ),
+          );
+        else {
+          final imageOffers = context.read<OfferBloc>().offers.imageOffers;
+          print(imageOffers.length);
+          return Container(
+            padding: const EdgeInsets.only(top: 12),
+            child: ListView.separated(
+                itemBuilder: (ctx, index) => InkWell(
+                      onTap: () {
+                        NavigatorImpl()
+                            .push(NamedRoutes.IMAGE_DETAILS_SCREEN, arguments: {
+                          'offer': imageOffers[index],
+                        });
+                      },
+                      child: Container(
+                        height: screenHeight * 0.3,
+                        color: MyColors.lightGrey.withOpacity(0.2),
+                        child: Stack(
+                          children: [
+                            Center(
+                              child: Container(
+                                width: screenWidth * 0.4,
+                                child: ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount:
+                                      imageOffers[index].offerMedia.length,
+                                  itemBuilder: (ctx, i) => Stack(
+                                    children: [
+                                      Container(
+                                        width: screenWidth * 0.4,
+                                        child: Image.network(
+                                          imageOffers[index].offerMedia[i],
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                      Positioned(
+                                        bottom: 10,
+                                        right: 10,
+                                        child: Chip(
+                                          label: Text(
+                                            '${i + 1} / ${imageOffers[index].offerMedia.length}',
+                                            style: Constants.TEXT_STYLE6,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Positioned(
+                              top: 12,
+                              right: 12,
+                              child: Text(
+                                DateFormat('dd MMM yyyy').format(
+                                  imageOffers[index].offerCreationDate!,
+                                ),
+                                style: Constants.TEXT_STYLE6,
+                              ),
+                            ),
+                            Positioned(
+                              bottom: 12,
+                              right: 12,
+                              child: GestureDetector(
+                                onTap: () async {
+                                  bool b = await showDialog(
+                                    context: context,
+                                    builder: (ctx) => AlertDialog(
+                                      title: Text(
+                                        'Are you sure?',
+                                        style: Constants.TEXT_STYLE8,
+                                      ),
+                                      content: Text(
+                                        'Offer and its data will be deleted',
+                                        style: Constants.TEXT_STYLE4
+                                            .copyWith(color: Colors.red),
+                                      ),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () {
+                                            NavigatorImpl().pop(result: true);
+                                          },
+                                          child: Text(
+                                            'Yes',
+                                            style: TextStyle(
+                                                color: MyColors.secondaryColor),
+                                          ),
+                                        ),
+                                        TextButton(
+                                          onPressed: () {
+                                            NavigatorImpl().pop(result: false);
+                                          },
+                                          child: Text(
+                                            'No',
+                                            style: TextStyle(
+                                                color: MyColors.secondaryColor),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
 
-class OfferImageItem extends StatelessWidget {
-  const OfferImageItem({Key? key, required this.offer}) : super(key: key);
-
-  final OneImageOffer offer;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15),
-        color: MyColors.grey.withOpacity(0.2),
-      ),
-      child: Row(
-        children: [
-          Image(
-            image: NetworkImage(offer.offerMedia[0]),
-          )
-        ],
-      ),
+                                  if (b)
+                                    BlocProvider.of<OfferBloc>(context).add(
+                                      DeleteOffer(
+                                        imageOffers[index].id!,
+                                        imageOffers[index].offerOwnerType,
+                                        imageOffers[index].offerType,
+                                        imageOffers[index].offerOwnerId,
+                                      ),
+                                    );
+                                },
+                                child: SvgPicture.asset(
+                                  'assets/images/trash.svg',
+                                  fit: BoxFit.scaleDown,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        // GestureDetector(
+                        //   onTap: () async {
+                        //     bool b = await showDialog(
+                        //       context: context,
+                        //       builder: (ctx) => AlertDialog(
+                        //         title: Text('Are you sure?', style: Constants.TEXT_STYLE8,),
+                        //         content: Text('Offer and its data will be deleted', style: Constants.TEXT_STYLE4.copyWith(color: Colors.red),),
+                        //         actions: [
+                        //           TextButton(
+                        //             onPressed: () {
+                        //               NavigatorImpl().pop(result: true);
+                        //             },
+                        //             child: Text('Yes', style: TextStyle(color: MyColors.secondaryColor),),
+                        //           ),
+                        //           TextButton(
+                        //             onPressed: () {
+                        //               NavigatorImpl().pop(result: false);
+                        //             },
+                        //             child: Text('No', style: TextStyle(color: MyColors.secondaryColor),),
+                        //           ),
+                        //         ],
+                        //       ),
+                        //     );
+                        //
+                        //     if (b)
+                        //       BlocProvider.of<OfferBloc>(context).add(DeleteOffer(imageOffers[index].id, imageOffers[index].offerOwnerType));
+                        //   },
+                        //   child: SvgPicture.asset(
+                        //     'assets/images/trash.svg',
+                        //     fit: BoxFit.scaleDown,
+                        //   ),
+                        // ),
+                      ),
+                    ),
+                separatorBuilder: (ctx, index) => const SizedBox(
+                      height: 8,
+                    ),
+                itemCount: imageOffers.length),
+          );
+        }
+      },
     );
   }
 }

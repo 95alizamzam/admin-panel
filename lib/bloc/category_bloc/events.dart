@@ -15,10 +15,10 @@ class RemoveCategoryEvent extends CategoryEvents {
 }
 
 class RemoveParticularCategoryEvent extends CategoryEvents {
-  final String cattitle;
+  final String catTitle;
   final String subCatName;
 
-  RemoveParticularCategoryEvent(this.cattitle, this.subCatName);
+  RemoveParticularCategoryEvent(this.catTitle, this.subCatName);
 }
 
 class AddCategoryEvent extends CategoryEvents {

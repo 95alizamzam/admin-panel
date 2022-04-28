@@ -50,7 +50,7 @@ class Constants {
     color: MyColors.black,
   );
 
-  static const PRICE_TEXT_STYLE = TextStyle(
+  static const TEXT_STYLE9 = TextStyle(
     color: MyColors.secondaryColor,
     fontSize: 18,
     fontWeight: FontWeight.w500,

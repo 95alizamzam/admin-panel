@@ -1,45 +1,141 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:marketing_admin_panel/bloc/offers_bloc/bloc.dart';
 import 'package:marketing_admin_panel/bloc/offers_bloc/events.dart';
 import 'package:marketing_admin_panel/bloc/offers_bloc/states.dart';
-import 'package:marketing_admin_panel/models/image_offer_model.dart';
 import 'package:marketing_admin_panel/utils/colors.dart';
+import 'package:marketing_admin_panel/utils/constants.dart';
+import 'package:marketing_admin_panel/utils/navigator/named_routes.dart';
+import 'package:marketing_admin_panel/utils/navigator/navigator_imp.dart';
 import 'package:video_player/video_player.dart';
+import 'package:intl/intl.dart' show DateFormat;
 
 class VideoOffer extends StatefulWidget {
-  const VideoOffer({Key? key}) : super(key: key);
+  final offerOwnerType;
+  const VideoOffer({Key? key, required this.offerOwnerType}) : super(key: key);
 
   @override
   State<VideoOffer> createState() => _VideoOfferState();
 }
 
 class _VideoOfferState extends State<VideoOffer> {
+
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    BlocProvider.of<OfferBloc>(context).add(FetchAllOffers('OfferType.Video'));
+  void initState() {
+    BlocProvider.of<OfferBloc>(context).add(FetchAllOffers('OfferType.Video', widget.offerOwnerType));
+    super.initState();
   }
 
-  List<OneImageOffer> data = [];
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<OfferBloc, OfferStates>(
-      builder: (context, state) {
-        if (state is FetchOfferVideoDoneState) {
-          data = state.model.allImageOffers;
-        }
-        return Container(
-          width: double.maxFinite,
-          height: double.maxFinite,
-          child: ListView.separated(
-            itemBuilder: (context, index) => OfferVideoItem(
-              offer: data[index],
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+    return BlocConsumer<OfferBloc, OfferStates>(
+      listener: (ctx, state) {
+        if (state is DeleteOfferLoading)
+          EasyLoading.show(status: 'Please wait');
+        else if (state is DeleteOfferFailed)
+          EasyLoading.showError(state.message);
+        else if (state is DeleteOfferSucceed)
+          EasyLoading.showSuccess('Offer Deleted');
+      },
+      builder: (ctx, state) {
+        if (state is FetchOfferLoadingState || state is FetchOfferInitialState)
+          return Center(
+            child: CircularProgressIndicator(
+              color: MyColors.secondaryColor,
             ),
-            separatorBuilder: (context, index) => SizedBox(height: 10),
-            itemCount: data.length,
-          ),
-        );
+          );
+        else if (state is FetchOfferFiledState)
+          return Center(
+            child: Text(
+              state.message,
+              style: Constants.TEXT_STYLE9,
+            ),
+          );
+        else {
+          final videoOffers = context.read<OfferBloc>().offers.videoOffers;
+          return Container(
+            padding: const EdgeInsets.only(top: 12),
+            child: ListView.separated(
+                itemBuilder: (ctx, index) => InkWell(
+                  onTap: () {
+                    NavigatorImpl().push(NamedRoutes.VIDEO_DETAILS_SCREEN,
+                        arguments: {
+                          'video': videoOffers[index],
+                        });
+                  },
+                  child: Container(
+                    height: screenHeight * 0.3,
+                    color: MyColors.lightGrey.withOpacity(0.2),
+                    child: Stack(
+                      children: [
+                        Center(
+                          child: Container(
+                            //width: screenWidth * 0.4,
+                            child: OfferVideoItem(
+                              offer: videoOffers[index],
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          top: 12,
+                          right: 12,
+                          child: Text(
+                            DateFormat('dd MMM yyyy').format(
+                              videoOffers[index].offerCreationDate!,
+                            ),
+                            style: Constants.TEXT_STYLE6,
+                          ),
+                        ),
+                        Positioned(
+                          bottom: 12,
+                          right: 12,
+                          child: GestureDetector(
+                            onTap: () async {
+                              bool b = await showDialog(
+                                context: context,
+                                builder: (ctx) => AlertDialog(
+                                  title: Text('Are you sure?', style: Constants.TEXT_STYLE8,),
+                                  content: Text('Offer and its data will be deleted', style: Constants.TEXT_STYLE4.copyWith(color: Colors.red),),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        NavigatorImpl().pop(result: true);
+                                      },
+                                      child: Text('Yes', style: TextStyle(color: MyColors.secondaryColor),),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        NavigatorImpl().pop(result: false);
+                                      },
+                                      child: Text('No', style: TextStyle(color: MyColors.secondaryColor),),
+                                    ),
+                                  ],
+                                ),
+                              );
+
+                              if (b)
+                                BlocProvider.of<OfferBloc>(context).add(DeleteOffer(videoOffers[index].id!, videoOffers[index].offerOwnerType, videoOffers[index].offerType, videoOffers[index].offerOwnerId,),);
+                            },
+                            child: SvgPicture.asset(
+                              'assets/images/trash.svg',
+                              fit: BoxFit.scaleDown,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                separatorBuilder: (ctx, index) => const SizedBox(
+                  height: 8,
+                ),
+                itemCount: videoOffers.length),
+          );
+        }
       },
     );
   }
@@ -48,7 +144,7 @@ class _VideoOfferState extends State<VideoOffer> {
 class OfferVideoItem extends StatefulWidget {
   const OfferVideoItem({Key? key, required this.offer}) : super(key: key);
 
-  final OneImageOffer offer;
+  final offer;
 
   @override
   State<OfferVideoItem> createState() => _OfferVideoItemState();
@@ -84,15 +180,22 @@ class _OfferVideoItemState extends State<OfferVideoItem> {
   }
 
   @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
     return Container(
-      margin: EdgeInsets.all(20),
-      alignment: Alignment.center,
-      padding: EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15),
-        color: MyColors.grey.withOpacity(0.1),
-      ),
+      // margin: EdgeInsets.all(20),
+      // alignment: Alignment.center,
+      // padding: EdgeInsets.all(20),
+      // decoration: BoxDecoration(
+      //   borderRadius: BorderRadius.circular(15),
+      //   color: MyColors.grey.withOpacity(0.1),
+      // ),
       child: FutureBuilder(
           future: _initializeVideoPlayerFuture,
           builder: (context, snapshot) {
@@ -101,7 +204,7 @@ class _OfferVideoItemState extends State<OfferVideoItem> {
                 alignment: Alignment.center,
                 children: [
                   Container(
-                    height: 100,
+                    height: screenHeight * 0.3,
                     child: AspectRatio(
                       aspectRatio: _controller.value.aspectRatio,
                       child: VideoPlayer(_controller),
@@ -128,7 +231,7 @@ class _OfferVideoItemState extends State<OfferVideoItem> {
                 ],
               );
             } else {
-              return CircularProgressIndicator();
+              return Center(child: CircularProgressIndicator(color: MyColors.secondaryColor,));
             }
           }),
     );

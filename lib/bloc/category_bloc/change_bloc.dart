@@ -8,57 +8,65 @@ import 'package:marketing_admin_panel/repositories/categories/category_repositor
 import 'states.dart';
 
 class CategoryBloc extends Bloc<CategoryEvents, CategoryStates> {
-  CategoryBloc() : super(ChangeSelectedCategoryInitialStates()) {
-    on<CategoryEvents>((event, emit) async {
-      if (event is FetchAllCategoriesEvent) {
-        emit(FetchAllCategoriesLoadingStates());
+	CategoryBloc() : super(ChangeSelectedCategoryInitialStates()) {
+		on<CategoryEvents>((event, emit) async {
+			if (event is FetchAllCategoriesEvent) {
+				emit(FetchAllCategoriesLoadingStates());
 
-        try {
-          final data = await locator.get<CategoriesRepo>().getCategories();
-          CategoriesModel model = CategoriesModel.fromJson(data.docs);
+				try {
+					final data = await locator.get<CategoriesRepo>().getCategories();
+					CategoriesModel model = CategoriesModel.fromJson(data.docs);
 
-          emit(FetchAllCategoriesDoneStates(model));
-        } catch (e) {
-          print('in FetchAllCategoriesEvent');
-          print(e.toString());
-          emit(FetchAllCategoriesFailedStates());
-        }
-      }
+					emit(FetchAllCategoriesDoneStates(model));
+				} catch (e) {
+					print('in FetchAllCategoriesEvent');
+					print(e.toString());
+					emit(FetchAllCategoriesFailedStates());
+				}
+			}
 
-      if (event is ChangeCategoryEvent) {
-        emit(ChangeSelectedCategoryLoadingStates());
-        emit(ChangeSelectedCategoryDoneStates(event.index));
-      }
+			if (event is ChangeCategoryEvent) {
+				emit(ChangeSelectedCategoryLoadingStates());
+				emit(ChangeSelectedCategoryDoneStates(event.index));
+			}
 
-      if (event is RemoveCategoryEvent) {
-        try {
-          await locator.get<CategoriesRepo>().remove(event.id);
-        } catch (e) {
-          print('in RemoveCategoryEvent');
+			if (event is RemoveCategoryEvent) {
+				emit(Loading());
+				try {
+					await locator.get<CategoriesRepo>().remove(event.id);
+					emit(Done());
+				} catch (e) {
+					print('in RemoveCategoryEvent');
+					print(e.toString());
+					emit(Failed('Error, try again'));
+				}
+			}
 
-          print(e.toString());
-        }
-      }
+			if (event is AddCategoryEvent) {
+				emit(Loading());
+				try {
+					await locator.get<CategoriesRepo>().add(event.title, event.data);
+					emit(Done());
+				} catch (e) {
+					print(' in AddCategoryEvent');
+					print(e.toString());
+					emit(Failed('Error, try again'));
+				}
+			}
 
-      if (event is AddCategoryEvent) {
-        try {
-          await locator.get<CategoriesRepo>().add(event.title, event.data);
-        } catch (e) {
-          print(' in AddCategoryEvent');
-          print(e.toString());
-        }
-      }
-
-      if (event is RemoveParticularCategoryEvent) {
-        try {
-          await locator
-              .get<CategoriesRepo>()
-              .removeCat(event.cattitle, event.subCatName);
-        } catch (e) {
-          print('in RemoveParticularCategoryEvent');
-          print(e.toString());
-        }
-      }
-    });
-  }
+			if (event is RemoveParticularCategoryEvent) {
+				emit(Loading());
+				try {
+					await locator
+							.get<CategoriesRepo>()
+							.removeCat(event.catTitle, event.subCatName);
+					emit(Done());
+				} catch (e) {
+					print('in RemoveParticularCategoryEvent');
+					print(e.toString());
+					emit(Failed('Error, try again'));
+				}
+			}
+		});
+	}
 }

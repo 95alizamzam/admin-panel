@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:marketing_admin_panel/UI/shared_widgets/custom_button.dart';
+import 'package:marketing_admin_panel/helper.dart';
 import 'package:marketing_admin_panel/utils/colors.dart';
 import 'package:marketing_admin_panel/utils/constants.dart';
 import 'package:marketing_admin_panel/utils/navigator/named_routes.dart';
 import 'package:marketing_admin_panel/utils/navigator/navigator_imp.dart';
-import 'package:marketing_admin_panel/utils/shared_widgets.dart';
 
 class SplashScreen extends StatefulWidget {
   final navigator;
@@ -24,6 +24,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   void initState() {
+    Helper().customizeEasyLoading();
     timer();
     super.initState();
   }
@@ -38,24 +39,25 @@ class _SplashScreenState extends State<SplashScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Text(
-                'Marketing App ',
-                style: Constants.TEXT_STYLE8,
+                'OVX Style',
+                style: Constants.TEXT_STYLE2,
               ),
               const SizedBox(height: 10),
               const Text(
-                'Welcome Admin Of The App',
-                style: Constants.TEXT_STYLE1,
+                'Welcome Admin',
+                style: Constants.TEXT_STYLE8,
               ),
               const SizedBox(height: 10),
               isLoading
                   ? const CircularProgressIndicator(
-                      color: MyColors.lightBlue,
+                      color: MyColors.secondaryColor,
                     )
                   : CustomButton(
                       width: 200,
+                      color: MyColors.secondaryColor,
                       ontap: () {
-                        navigatorImp().push(
-                          NamedRoutes.HOME_SCREEN,
+                        NavigatorImpl().push(
+                          NamedRoutes.LOGIN_SCREEN,
                           clean: true,
                         );
                       },

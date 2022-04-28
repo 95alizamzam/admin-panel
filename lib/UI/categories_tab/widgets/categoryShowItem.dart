@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:marketing_admin_panel/bloc/category_bloc/change_bloc.dart';
 import 'package:marketing_admin_panel/bloc/category_bloc/events.dart';
 import 'package:marketing_admin_panel/utils/colors.dart';
+import 'package:marketing_admin_panel/utils/constants.dart';
+import 'package:marketing_admin_panel/utils/navigator/navigator_imp.dart';
 
 class CategoryShowItem extends StatelessWidget {
   const CategoryShowItem({
@@ -10,34 +13,30 @@ class CategoryShowItem extends StatelessWidget {
     required this.categoryTitle,
     required this.clr,
     required this.count,
-    required this.ontap,
+    required this.onTap,
   }) : super(key: key);
 
   final String categoryTitle;
   final int count;
   final Color clr;
-  final Function ontap;
+  final Function onTap;
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
         InkWell(
-          onTap: () => ontap(),
+          onTap: () => onTap(),
           child: Container(
             alignment: Alignment.center,
-            width: MediaQuery.of(context).size.width / count,
+            width: MediaQuery.of(context).size.width * 0.2,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: clr,
+              borderRadius: BorderRadius.circular(8),
+              color: MyColors.secondaryColor,
             ),
             child: Text(
               categoryTitle,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
+              style: Constants.TEXT_STYLE8.copyWith(color: Colors.white),
             ),
           ),
         ),
@@ -45,51 +44,46 @@ class CategoryShowItem extends StatelessWidget {
           top: 10,
           right: 10,
           child: GestureDetector(
-            onTap: () {
-              showDialog(
+            onTap: () async {
+              bool b = await showDialog(
                 context: context,
                 builder: (context) => AlertDialog(
                   title: const Text(
-                    'Delete Category !!',
-                    style: TextStyle(color: Colors.red),
+                    'Are you sure?',
+                    style: Constants.TEXT_STYLE8,
                   ),
                   content: Container(
-                    child: const Text(
-                      'Do You Want Delete this Category',
+                    child: Text(
+                      'This category and all its data will be deleted',
+                      style: Constants.TEXT_STYLE4.copyWith(color: Colors.red),
                     ),
                   ),
                   actions: [
                     TextButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      child: const Text('Cancel'),
+                      onPressed: () => NavigatorImpl().pop(result: false),
+                      child: const Text('Cancel', style: TextStyle(color: MyColors.secondaryColor),),
                     ),
                     TextButton(
                       onPressed: () {
-                        Navigator.of(context).pop();
-                        BlocProvider.of<CategoryBloc>(context)
-                            .add(RemoveCategoryEvent(categoryTitle));
-
-                        BlocProvider.of<CategoryBloc>(context)
-                            .add(FetchAllCategoriesEvent());
+                        NavigatorImpl().pop(result: true);
                       },
                       child: const Text(
                         'Okay',
-                        style: TextStyle(color: Colors.red),
+                        style: TextStyle(color: MyColors.secondaryColor),
                       ),
                     ),
                   ],
                 ),
               );
+
+              if(b){
+                BlocProvider.of<CategoryBloc>(context).add(RemoveCategoryEvent(categoryTitle));
+
+                BlocProvider.of<CategoryBloc>(context).add(FetchAllCategoriesEvent());
+              }
+
             },
-            child: const CircleAvatar(
-              radius: 25,
-              backgroundColor: MyColors.primaryColor,
-              child: Icon(
-                Icons.delete_forever_outlined,
-                color: Colors.black,
-                size: 35,
-              ),
-            ),
+            child: SvgPicture.asset('assets/images/trash.svg', fit: BoxFit.scaleDown,),
           ),
         ),
       ],

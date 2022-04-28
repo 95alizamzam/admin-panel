@@ -9,6 +9,7 @@ class MyColors {
   static const grey = Color(0XFF898989);
   static const red = Color(0XFFFF6C6C);
 
+  static const tabColor = Color(0XFF5C6090);
   static const shimmerBaseColor = Color(0xFFF4F4F4);
   static const shimmerHighlightedColor = Color(0xFFDADADA);
 }

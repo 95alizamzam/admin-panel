@@ -25,3 +25,11 @@ class ChangeSelectedCategoryDoneStates extends CategoryStates {
 }
 
 class ChangeSelectedCategoryFailedStates extends CategoryStates {}
+
+class Loading extends CategoryStates {}
+class Done extends CategoryStates {}
+class Failed extends CategoryStates {
+  String message;
+
+  Failed(this.message);
+}

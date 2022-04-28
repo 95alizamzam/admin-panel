@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:marketing_admin_panel/UI/categories_tab/widgets/content.dart';
 import 'package:marketing_admin_panel/UI/categories_tab/widgets/categories_show.dart';
 import 'package:marketing_admin_panel/UI/categories_tab/widgets/top_row.dart';
-
 import 'package:marketing_admin_panel/bloc/category_bloc/change_bloc.dart';
 import 'package:marketing_admin_panel/bloc/category_bloc/events.dart';
 import 'package:marketing_admin_panel/bloc/category_bloc/states.dart';
@@ -25,19 +25,13 @@ class _CategoriesTabState extends State<CategoriesTab> {
 
   @override
   void initState() {
+    BlocProvider.of<CategoryBloc>(context).add(FetchAllCategoriesEvent());
     currentIndex = 0;
-
     subcategories = [];
     data1 = [];
 
     selectedCategory = '';
     super.initState();
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    BlocProvider.of<CategoryBloc>(context).add(FetchAllCategoriesEvent());
   }
 
   @override
@@ -53,19 +47,63 @@ class _CategoriesTabState extends State<CategoriesTab> {
           selectedCategory = data1[currentIndex].title!;
           subcategories = data1[currentIndex].subCategories;
         }
+
+        if(state is Loading)
+          EasyLoading.show(status: 'Please wait..');
+
+        if(state is Done)
+          EasyLoading.dismiss();
+
+        if(state is Failed){
+          EasyLoading.dismiss();
+          EasyLoading.showError(state.message);
+        }
       },
       builder: (context, state) {
-        if (state is ChangeSelectedCategoryLoadingStates) {
+        if (state is ChangeSelectedCategoryLoadingStates || state is FetchAllCategoriesLoadingStates) {
           return const Center(
             child: CircularProgressIndicator(
-              color: MyColors.primaryColor,
+              color: MyColors.secondaryColor,
             ),
           );
         } else {
           return Container(
             color: MyColors.primaryColor,
-            padding: const EdgeInsets.only(top: 20, bottom: 20),
+            padding: const EdgeInsets.only(top: 20, right: 20, left: 20),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(
+                  flex: 1,
+                  child: TopRow(),
+                ),
+                Expanded(
+                  flex: 2,
+                  child: CategoriesShow(items: data1),
+                ),
+                Divider(
+                  color: Colors.grey.shade700,
+                  thickness: 2,
+                  endIndent: 20,
+                  indent: 20,
+                ),
+                Expanded(
+                  flex: 7,
+                  child:  Content(
+                    selectedCategory: selectedCategory,
+                    subCat: data1.isEmpty ? [] : subcategories,
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+      },
+    );
+  }
+}
+
+/*Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 const TopRow(),
@@ -81,10 +119,4 @@ class _CategoriesTabState extends State<CategoriesTab> {
                   subCat: data1.isEmpty ? [] : subcategories,
                 ),
               ],
-            ),
-          );
-        }
-      },
-    );
-  }
-}
+            )*/

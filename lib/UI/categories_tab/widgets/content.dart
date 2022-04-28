@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:marketing_admin_panel/bloc/category_bloc/change_bloc.dart';
 import 'package:marketing_admin_panel/bloc/category_bloc/events.dart';
 import 'package:marketing_admin_panel/bloc/category_bloc/states.dart';
 import 'package:marketing_admin_panel/utils/colors.dart';
+import 'package:marketing_admin_panel/utils/constants.dart';
 
 class Content extends StatefulWidget {
   const Content({
@@ -20,14 +22,17 @@ class Content extends StatefulWidget {
 }
 
 class _ContentState extends State<Content> {
-  void delete(subcat) {
-    widget.subCat.removeWhere((element) => element == subcat);
-    BlocProvider.of<CategoryBloc>(context).add(
-      RemoveParticularCategoryEvent(
-        widget.selectedCategory,
-        subcat,
-      ),
-    );
+  void delete(subCat) {
+    widget.subCat.removeWhere((element) => element == subCat);
+    if(widget.subCat.length == 0)
+      BlocProvider.of<CategoryBloc>(context).add(RemoveCategoryEvent(widget.selectedCategory));
+    else
+      BlocProvider.of<CategoryBloc>(context).add(
+        RemoveParticularCategoryEvent(
+          widget.selectedCategory,
+          subCat,
+        ),
+      );
 
     BlocProvider.of<CategoryBloc>(context).add(FetchAllCategoriesEvent());
   }
@@ -46,72 +51,51 @@ class _ContentState extends State<Content> {
           return widget.selectedCategory.isEmpty && widget.subCat.isEmpty
               ? const Center(
                   child: Text(
-                  'Welocme, Please click on Category',
-                  style: TextStyle(
-                    fontSize: 30,
-                    color: MyColors.secondaryColor,
-                  ),
+                  'Welcome, please click on Category',
+                  style: Constants.TEXT_STYLE9,
                 ))
-              : Expanded(
-                  child: Container(
-                    margin: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 10),
-                    child: ListView(
-                      children: widget.subCat.map((subcat) {
-                        return Container(
-                          margin: const EdgeInsets.symmetric(
-                            vertical: 6,
-                          ),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  padding: const EdgeInsets.all(10),
-                                  margin: const EdgeInsets.symmetric(
-                                    horizontal: 20,
-                                  ),
-                                  width: double.maxFinite,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(15),
-                                    color: Colors.grey.shade400,
-                                  ),
-                                  child: Text(
-                                    subcat,
-                                    textAlign: TextAlign.center,
-                                    style: const TextStyle(
-                                      color: MyColors.primaryColor,
-                                      fontSize: 20,
-                                    ),
-                                  ),
+              : Container(
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  child: ListView(
+                    children: widget.subCat.map((subCat) {
+                      return Container(
+                        margin: const EdgeInsets.symmetric(
+                          vertical: 6,
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                padding: const EdgeInsets.all(10),
+                                margin: const EdgeInsets.symmetric(
+                                  horizontal: 20,
                                 ),
-                              ),
-                              PopupMenuButton<String>(
-                                color: Colors.white,
-                                enabled: true,
-                                iconSize: 20,
-                                shape: OutlineInputBorder(
+                                decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(15),
+                                  color: MyColors.lightBlue,
                                 ),
-                                padding: EdgeInsets.zero,
-                                itemBuilder: (context) {
-                                  return [
-                                    PopupMenuItem<String>(
-                                      value: subcat,
-                                      enabled: true,
-                                      textStyle: const TextStyle(
-                                        color: Colors.red,
-                                      ),
-                                      child: const Text('Delete'),
-                                      onTap: () => delete(subcat),
-                                    ),
-                                  ];
-                                },
+                                child: Text(
+                                  subCat,
+                                  textAlign: TextAlign.center,
+                                  style: Constants.TEXT_STYLE4
+                                      .copyWith(color: Colors.white),
+                                ),
                               ),
-                            ],
-                          ),
-                        );
-                      }).toList(),
-                    ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                delete(subCat);
+                              },
+                              child: SvgPicture.asset(
+                                'assets/images/trash.svg',
+                                fit: BoxFit.scaleDown,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }).toList(),
                   ),
                 );
         }
@@ -119,3 +103,60 @@ class _ContentState extends State<Content> {
     );
   }
 }
+
+/*child: ListView(
+                  children: widget.subCat.map((subCat) {
+                    return Container(
+                      margin: const EdgeInsets.symmetric(
+                        vertical: 6,
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Container(
+                              padding: const EdgeInsets.all(10),
+                              margin: const EdgeInsets.symmetric(
+                                horizontal: 20,
+                              ),
+                              width: double.maxFinite,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(15),
+                                color: Colors.grey.shade400,
+                              ),
+                              child: Text(
+                                subCat,
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  color: MyColors.primaryColor,
+                                  fontSize: 20,
+                                ),
+                              ),
+                            ),
+                          ),
+                          PopupMenuButton<String>(
+                            color: Colors.white,
+                            enabled: true,
+                            iconSize: 20,
+                            shape: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            padding: EdgeInsets.zero,
+                            itemBuilder: (context) {
+                              return [
+                                PopupMenuItem<String>(
+                                  value: subCat,
+                                  enabled: true,
+                                  textStyle: const TextStyle(
+                                    color: Colors.red,
+                                  ),
+                                  child: const Text('Delete'),
+                                  onTap: () => delete(subCat),
+                                ),
+                              ];
+                            },
+                          ),
+                        ],
+                      ),
+                    );
+                  }).toList(),
+                ),*/

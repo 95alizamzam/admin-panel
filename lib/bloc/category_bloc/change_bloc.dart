@@ -21,7 +21,7 @@ class CategoryBloc extends Bloc<CategoryEvents, CategoryStates> {
 				} catch (e) {
 					print('in FetchAllCategoriesEvent');
 					print(e.toString());
-					emit(FetchAllCategoriesFailedStates());
+					emit(FetchAllCategoriesFailedStates('Error, try again'));
 				}
 			}
 

@@ -8,14 +8,13 @@ import 'package:marketing_admin_panel/UI/offers_tab/video_details_screen.dart';
 import 'package:marketing_admin_panel/UI/splach_screen/splach_screen.dart';
 import '../../UI/image_screen.dart';
 import 'package:marketing_admin_panel/UI/users_person_tab/user_details_screen.dart';
-import 'package:marketing_admin_panel/models/usersModel.dart';
 import 'package:marketing_admin_panel/utils/navigator/named_navigator.dart';
 import 'package:marketing_admin_panel/utils/navigator/named_routes.dart';
 import 'package:page_transition/page_transition.dart';
 
 class NavigatorImpl implements NamedNavigator {
   static final GlobalKey<NavigatorState> navigatorState =
-      GlobalKey<NavigatorState>();
+  GlobalKey<NavigatorState>();
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -139,11 +138,11 @@ class NavigatorImpl implements NamedNavigator {
 
   @override
   Future push(
-    String routeName, {
-    arguments,
-    bool replace = false,
-    bool clean = false,
-  }) {
+      String routeName, {
+        arguments,
+        bool replace = false,
+        bool clean = false,
+      }) {
     if (clean) {
       return navigatorState.currentState!.pushNamedAndRemoveUntil(
           routeName, (_) => false,

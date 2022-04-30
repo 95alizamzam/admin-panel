@@ -13,6 +13,7 @@ import 'package:marketing_admin_panel/helper.dart';
 import 'package:marketing_admin_panel/utils/colors.dart';
 import 'package:marketing_admin_panel/utils/constants.dart';
 import 'package:marketing_admin_panel/utils/enums.dart';
+import 'package:marketing_admin_panel/utils/modal_sheets.dart';
 import 'package:marketing_admin_panel/utils/navigator/navigator_imp.dart';
 
 import 'gender_picker.dart';
@@ -117,7 +118,7 @@ class _SearchWidgetState extends State<SearchWidget> {
         ),
         IconButton(
           onPressed: () {
-            showFilter(context, widget.userType);
+            ModalSheets().showUsersFilter(context, widget.userType);
           },
           icon: SvgPicture.asset(
             'assets/images/filter.svg',
@@ -126,187 +127,4 @@ class _SearchWidgetState extends State<SearchWidget> {
       ],
     );
   }
-}
-
-void showFilter(BuildContext context, UserType userType) {
-  //data to filter
-  RangeValues val = RangeValues(0, 100);
-  String gender = '';
-  List<String> countries = [];
-
-  showModalBottomSheet(
-    isScrollControlled: true,
-    shape: OutlineInputBorder(
-      borderRadius: BorderRadius.only(
-        topLeft: Radius.circular(25),
-        topRight: Radius.circular(25),
-      ),
-      borderSide: BorderSide(color: MyColors.primaryColor),
-    ),
-    context: context,
-    builder: (ctx) {
-      return StatefulBuilder(
-        builder: (ctx, setState) {
-          return Container(
-            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 50),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  'Filter',
-                  style: Constants.TEXT_STYLE9,
-                ),
-                const SizedBox(
-                  height: 12,
-                ),
-                if(userType == UserType.User)
-                  Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    'Age',
-                    style: Constants.TEXT_STYLE4,
-                  ),
-                ),
-                if(userType == UserType.User)
-                  const SizedBox(
-                  height: 8,
-                ),
-                if(userType == UserType.User)
-                  RangeSlider(
-                  labels: RangeLabels(val.start.ceil().toString(), val.end.ceil().toString()),
-                  divisions: 100,
-                  activeColor: MyColors.secondaryColor,
-                  inactiveColor: MyColors.lightGrey,
-                  min: 0,
-                  max: 100,
-                  values: val,
-                  onChanged: (rangeValues) {
-                    setState(() {
-                      val = rangeValues;
-                    });
-                  },
-                ),
-                const SizedBox(
-                  height: 8,
-                ),
-                GestureDetector(
-                  onTap: () async {
-                    showFilterCountriesSheet(context, countries);
-                  },
-                  child: CustomFilterContainer(
-                    title: 'Countries',
-                  ),
-                ),
-                const SizedBox(
-                  height: 8,
-                ),
-                if(userType == UserType.User)
-                  GenderPicker(
-                  onSaved: (c) {},
-                  onChanged: (pickedGender) {
-                    gender = pickedGender;
-                  },
-                ),
-                const SizedBox(
-                  height: 12,
-                ),
-                CustomButton(
-                  ontap: () {
-                    context.read<UserBloc>().add(FilterUsers(val.start, val.end, gender, countries, userType));
-                    NavigatorImpl().pop();
-                  },
-                  buttonLabel: 'Submit',
-                  padding: 12,
-                  radius: 12,
-                  color: MyColors.secondaryColor,
-                  labelColor: Colors.white,
-                  labelSize: 16,
-                  width: 300,
-                ),
-              ],
-            ),
-          );
-        },
-      );
-    },
-  );
-}
-
-void showFilterCountriesSheet(BuildContext context, List<String> countries) {
-
-  showModalBottomSheet(
-    isScrollControlled: true,
-    shape: OutlineInputBorder(
-      borderRadius: BorderRadius.only(
-        topLeft: Radius.circular(25),
-        topRight: Radius.circular(25),
-      ),
-      borderSide: BorderSide(color: MyColors.primaryColor),
-    ),
-    context: context,
-    builder: (ctx) {
-      return StatefulBuilder(
-        builder: (ctx, setNewState) => Container(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                'Countries',
-                style: TextStyle(
-                  fontSize: 20,
-                  color: MyColors.secondaryColor,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: Text(
-                  'Pick countries to filter',
-                  style: Constants.TEXT_STYLE4,
-                ),
-              ),
-              CountryPicker(
-                saveCountry: (val) {
-                  String country = Helper().deleteCountryFlag(val);
-                  countries.add(country);
-                },
-              ),
-              const SizedBox(
-                height: 8,
-              ),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: countries
-                    .map(
-                      (country) => Text(
-                    '$country',
-                    style: Constants.TEXT_STYLE4,
-                  ),
-                )
-                    .toList(),
-              ),
-              const SizedBox(
-                height: 8,
-              ),
-              CustomButton(
-                ontap: () {
-                  NavigatorImpl().pop();
-                },
-                buttonLabel: 'Add',
-                padding: 12,
-                radius: 12,
-                color: MyColors.secondaryColor,
-                labelColor: Colors.white,
-                labelSize: 16,
-                width: 300,
-              ),
-            ],
-          ),
-        ),
-      );
-    },
-  );
 }

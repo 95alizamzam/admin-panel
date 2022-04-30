@@ -9,6 +9,7 @@ import 'package:marketing_admin_panel/bloc/points_bloc/points_events.dart';
 import 'package:marketing_admin_panel/bloc/points_bloc/points_states.dart';
 import 'package:marketing_admin_panel/utils/colors.dart';
 import 'package:marketing_admin_panel/utils/constants.dart';
+import 'package:marketing_admin_panel/utils/modal_sheets.dart';
 import 'package:marketing_admin_panel/utils/navigator/navigator_imp.dart';
 import 'package:provider/src/provider.dart';
 
@@ -45,7 +46,7 @@ class _SendPointsWidgetState extends State<SendPointsWidget> {
       },
       child: IconButton(
         onPressed: () {
-          showSendPoints(context, controller, widget.userId);
+          ModalSheets().showSendPoints(context, controller, widget.userId);
         },
         icon: SvgPicture.asset(
           'assets/images/send_points.svg',
@@ -53,76 +54,4 @@ class _SendPointsWidgetState extends State<SendPointsWidget> {
       ),
     );
   }
-}
-
-void showSendPoints(BuildContext context, TextEditingController controller, String userId) {
-  showModalBottomSheet(
-    isScrollControlled: true,
-    shape: OutlineInputBorder(
-      borderRadius: BorderRadius.only(
-        topLeft: Radius.circular(25),
-        topRight: Radius.circular(25),
-      ),
-      borderSide: BorderSide(color: MyColors.primaryColor),
-    ),
-    context: context,
-    builder: (ctx) {
-      return StatefulBuilder(
-        builder: (ctx, setState) {
-          return Container(
-            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 50),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  'Enter amount',
-                  style: Constants.TEXT_STYLE4,
-                ),
-                const SizedBox(
-                  height: 12,
-                ),
-                CustomTextFormField(
-                  controller: controller,
-                  hint: 'Enter points amount',
-                  width: 300.0,
-                  keyboardType: TextInputType.number,
-                  validateInput: (p) {},
-                  saveInput: (p) {},
-                ),
-                const SizedBox(
-                  height: 12,
-                ),
-                CustomButton(
-                  ontap: () {
-                    if(controller.text.isEmpty)
-                      EasyLoading.showToast('Enter points');
-                    else{
-                      int points = int.tryParse(controller.text) ?? 0;
-                      if(points <= 0)
-                        EasyLoading.showToast('Enter points');
-                      else{
-                        context.read<PointsBloc>().add(SendPoints(userId, points));
-                        NavigatorImpl().pop();
-                      }
-                    }
-                  },
-                  buttonLabel: 'Send',
-                  padding: 12,
-                  radius: 12,
-                  color: MyColors.secondaryColor,
-                  labelColor: Colors.white,
-                  labelSize: 16,
-                  width: 300,
-                ),
-                Padding(
-                    padding: EdgeInsets.only(
-                        bottom: MediaQuery.of(ctx).viewInsets.bottom)),
-              ],
-            ),
-          );
-        },
-      );
-    },
-  );
 }

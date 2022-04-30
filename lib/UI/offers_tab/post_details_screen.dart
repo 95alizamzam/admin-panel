@@ -8,9 +8,7 @@ import 'package:marketing_admin_panel/utils/navigator/navigator_imp.dart';
 import 'owner_row.dart';
 
 class PostDetailsScreen extends StatelessWidget {
-  const PostDetailsScreen(
-      {Key? key, required this.navigator, required this.post})
-      : super(key: key);
+  const PostDetailsScreen({Key? key, required this.navigator, required this.post}) : super(key: key);
 
   final navigator;
   final OnePostModel post;
@@ -30,23 +28,19 @@ class PostDetailsScreen extends StatelessWidget {
                 width: screenWidth * 0.5,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
-                  itemCount: post.offerMedia.length,
+                  itemCount: post.offerMedia!.length,
                   itemBuilder: (ctx, i) => Stack(
                     children: [
                       Container(
                         width: screenWidth * 0.5,
                         child: GestureDetector(
                           onTap: () {
-                            NavigatorImpl().push(NamedRoutes.IMAGE_SCREEN,
-                                arguments: {
-                                  'imageUrl': post.offerMedia[i],
-                                  'heroTag': 'image$i'
-                                });
+                            NavigatorImpl().push(NamedRoutes.IMAGE_SCREEN, arguments: {'imageUrl': post.offerMedia![i], 'heroTag': 'image$i'});
                           },
                           child: Hero(
                             tag: 'image$i',
                             child: Image.network(
-                              post.offerMedia[i],
+                              post.offerMedia![i],
                               fit: BoxFit.cover,
                             ),
                           ),
@@ -57,7 +51,7 @@ class PostDetailsScreen extends StatelessWidget {
                         right: 10,
                         child: Chip(
                           label: Text(
-                            '${i + 1} / ${post.offerMedia.length}',
+                            '${i + 1} / ${post.offerMedia!.length}',
                             style: Constants.TEXT_STYLE6,
                           ),
                         ),
@@ -68,7 +62,9 @@ class PostDetailsScreen extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: 18,),
+          const SizedBox(
+            height: 18,
+          ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 100),
             child: Text(
@@ -76,8 +72,16 @@ class PostDetailsScreen extends StatelessWidget {
               style: Constants.TEXT_STYLE4,
             ),
           ),
-          const SizedBox(height: 18,),
-          LikesAndComments(likes: post.likes, comments: post.comments),
+          const SizedBox(
+            height: 18,
+          ),
+          LikesAndComments(
+            likes: post.likes,
+            comments: post.comments ?? [],
+            offerOwnerType: post.offerOwnerType!,
+            offerId: post.id!,
+            offerType: post.offerType!,
+          ),
         ],
       ),
     );

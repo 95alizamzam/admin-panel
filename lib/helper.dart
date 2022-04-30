@@ -1,7 +1,9 @@
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:marketing_admin_panel/models/offers_model.dart';
 import 'package:marketing_admin_panel/utils/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:marketing_admin_panel/utils/enums.dart';
 
 class Helper {
 
@@ -71,5 +73,58 @@ class Helper {
     int currentYear = DateTime.now().year;
 
     return currentYear - yearOfBirth;
+  }
+
+  List<OneOfferModel> filterPrices(
+      List<OneOfferModel> offers, double minPrice, double maxPrice) {
+    List<String> offersToRemove = [];
+
+    for (var offer in offers) {
+      if (offer.offerType == OfferType.Product.toString()) {
+        OneProductModel p = offer as OneProductModel;
+        bool isInRange = true;
+
+        for (var productProp in p.properties!) {
+          for (var size in productProp.sizes!) {
+            if (!(size.price! > minPrice && size.price! < maxPrice)) {
+              isInRange = false;
+              break;
+            }
+          }
+
+          //check if already found a price not in range, if there is one, no need to continue
+          if (!isInRange) break;
+        }
+
+        if (!isInRange) offersToRemove.add(p.id!);
+      }
+    }
+
+    offers.removeWhere((offer) => offersToRemove.contains(offer.id));
+
+    return offers;
+  }
+
+  List<OneOfferModel> filterCategories(List<OneOfferModel> offers, List<String> categories) {
+    List<String> offersToRemove = [];
+
+    for (var offer in offers) {
+      if (offer.offerType == OfferType.Product.toString()) {
+        OneProductModel p = offer as OneProductModel;
+        bool isThereMatch = false;
+
+        for (var category in p.categories!) {
+          if (categories.contains(category)) {
+            isThereMatch = true;
+            break;
+          }
+        }
+
+        if (!isThereMatch) offersToRemove.add(p.id!);
+      }
+    }
+
+    offers.removeWhere((offer) => offersToRemove.contains(offer.id));
+    return offers;
   }
 }

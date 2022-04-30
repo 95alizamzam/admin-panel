@@ -14,7 +14,11 @@ class FetchAllCategoriesDoneStates extends CategoryStates {
   FetchAllCategoriesDoneStates(this.model);
 }
 
-class FetchAllCategoriesFailedStates extends CategoryStates {}
+class FetchAllCategoriesFailedStates extends CategoryStates {
+  String message;
+
+  FetchAllCategoriesFailedStates(this.message);
+}
 
 // when user click on category
 class ChangeSelectedCategoryLoadingStates extends CategoryStates {}

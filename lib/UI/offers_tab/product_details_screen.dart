@@ -68,14 +68,14 @@ class ProductDetailsScreen extends StatelessWidget {
                         user.profileImage == null || user.profileImage == ''
                             ? DefaultImage(size: 50.0)
                             : ClipRRect(
-                                borderRadius: BorderRadius.circular(50),
-                                child: Image.network(
-                                  user.profileImage!,
-                                  fit: BoxFit.cover,
-                                  width: 50.0,
-                                  height: 50.0,
-                                ),
-                              ),
+                          borderRadius: BorderRadius.circular(50),
+                          child: Image.network(
+                            user.profileImage!,
+                            fit: BoxFit.cover,
+                            width: 50.0,
+                            height: 50.0,
+                          ),
+                        ),
                         const SizedBox(width: 10,),
                         Text(
                           user.userName!,
@@ -95,7 +95,7 @@ class ProductDetailsScreen extends StatelessWidget {
                 width: screenWidth * 0.5,
                 child: ListView.separated(
                   scrollDirection: Axis.horizontal,
-                  itemCount: product.offerMedia.length,
+                  itemCount: product.offerMedia!.length,
                   separatorBuilder: (ctx, index) => const SizedBox(
                     width: 10,
                   ),
@@ -103,7 +103,7 @@ class ProductDetailsScreen extends StatelessWidget {
                     onTap: () {
                       NavigatorImpl()
                           .push(NamedRoutes.IMAGE_SCREEN, arguments: {
-                        'imageUrl': product.offerMedia[index],
+                        'imageUrl': product.offerMedia![index],
                         'heroTag': 'image$index',
                       });
                     },
@@ -112,7 +112,7 @@ class ProductDetailsScreen extends StatelessWidget {
                       child: Container(
                         width: screenWidth * 0.5,
                         child: Image.network(
-                          product.offerMedia[index],
+                          product.offerMedia![index],
                           fit: BoxFit.contain,
                         ),
                       ),
@@ -129,8 +129,11 @@ class ProductDetailsScreen extends StatelessWidget {
             height: 8,
           ),
           LikesAndComments(
-            comments: product.comments,
+            comments: product.comments ?? [],
             likes: product.likes,
+            offerId: product.id!,
+            offerOwnerType: product.offerOwnerType!,
+            offerType: product.offerType!,
           ),
         ],
       ),

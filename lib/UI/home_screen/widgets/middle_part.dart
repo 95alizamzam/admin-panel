@@ -30,9 +30,7 @@ class _MiddlePartState extends State<MiddlePart> {
     CurrenciesTab(),
     BillsRequests(),
   ];
-
-  int currentIndex = 0;
-
+  
   @override
   Widget build(BuildContext context) {
     return PageView(

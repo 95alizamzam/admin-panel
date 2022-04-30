@@ -16,3 +16,8 @@ enum SearchType {
   UserCode,
   Email,
 }
+
+enum OfferStatus {
+  New,
+  Used,
+}

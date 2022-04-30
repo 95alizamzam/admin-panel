@@ -3,7 +3,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:marketing_admin_panel/models/offers_model.dart';
 import 'package:marketing_admin_panel/utils/colors.dart';
 import 'package:marketing_admin_panel/utils/constants.dart';
-import 'package:intl/intl.dart' show DateFormat;
 
 class ProductInfo extends StatelessWidget {
   final OneProductModel product;
@@ -22,7 +21,7 @@ class ProductInfo extends StatelessWidget {
               //spacing: 4,
               alignment: WrapAlignment.start,
               direction: Axis.horizontal,
-              children: product.categories.map((item) {
+              children: product.categories!.map((item) {
                 return Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -50,14 +49,14 @@ class ProductInfo extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Text(
-              product.offerName,
+              product.offerName!,
               style: Constants.TEXT_STYLE9,
             ),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Text(
-              product.shortDesc,
+              product.shortDesc ?? '',
               style: Constants.TEXT_STYLE4,
             ),
           ),
@@ -92,23 +91,23 @@ class ProductInfo extends StatelessWidget {
             color: MyColors.lightGrey.withOpacity(0.3),
             padding: const EdgeInsets.symmetric(horizontal: 12),
             child: Column(
-              children: product.properties
+              children: product.properties!
                   .map(
                     (property) => Row(
                       children: [
                         CircleAvatar(
                           radius: 18,
-                          backgroundColor: Color(property['color']),
+                          backgroundColor: property.color,
                         ),
                         Wrap(
-                          children: (property['sizes'] as List<dynamic>)
+                          children: property.sizes!
                               .map((size) => Padding(
                                     padding: const EdgeInsets.all(6.0),
                                     child: Chip(
                                       label: Text(
-                                        size['size'] +
+                                        size.size! +
                                             ' ' +
-                                            size['price'].toString() +
+                                            size.price.toString() +
                                             '\$',
                                         style: Constants.TEXT_STYLE4,
                                       ),

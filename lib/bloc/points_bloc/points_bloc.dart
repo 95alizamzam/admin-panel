@@ -1,3 +1,4 @@
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:marketing_admin_panel/bloc/points_bloc/points_events.dart';
 import 'package:marketing_admin_panel/bloc/points_bloc/points_states.dart';
@@ -18,6 +19,13 @@ class PointsBloc extends Bloc<PointsEvent, PointsState> {
             emit(SendPointsFailed('User Not Found'));
           else {
             await locator.get<UserRepo>().sendPointsToUser(event.userId, event.amount);
+            HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('sendPointsNotification');
+            String senderName = 'OVX Style App';
+            await callable.call(<String, dynamic>{
+              'userId': event.userId,
+              'senderName': senderName,
+              'pointsAmount': event.amount,
+            });
             emit(SendPointsSucceed());
           }
         }catch(e){

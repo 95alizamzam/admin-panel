@@ -9,6 +9,7 @@ import 'package:marketing_admin_panel/bloc/currencies_bloc/currencies_events.dar
 import 'package:marketing_admin_panel/bloc/currencies_bloc/currencies_states.dart';
 import 'package:marketing_admin_panel/utils/colors.dart';
 import 'package:marketing_admin_panel/utils/constants.dart';
+import 'package:marketing_admin_panel/utils/modal_sheets.dart';
 
 class CurrenciesTab extends StatefulWidget {
   @override
@@ -53,7 +54,7 @@ class _CurrenciesTabState extends State<CurrenciesTab> {
                   ),
                   Spacer(),
                   GestureDetector(
-                    onTap: () => showAddCurrencySheet(context),
+                    onTap: () => ModalSheets().showAddCurrencySheet(context),
                     child: Container(
                       padding: const EdgeInsets.all(12.0),
                       decoration: BoxDecoration(
@@ -111,19 +112,4 @@ class _CurrenciesTabState extends State<CurrenciesTab> {
       }
     });
   }
-}
-
-void showAddCurrencySheet(context) {
-  showModalBottomSheet(
-    context: context,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.only(
-        topRight: Radius.circular(12),
-        topLeft: Radius.circular(12),
-      ),
-    ),
-    builder: (_) {
-      return AddCurrencySheet();
-    },
-  );
 }

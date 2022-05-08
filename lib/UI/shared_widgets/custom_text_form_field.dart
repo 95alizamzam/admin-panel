@@ -51,13 +51,11 @@ class CustomTextFormField extends StatelessWidget {
         onChanged: onChanged,
         initialValue: initialValue,
         decoration: InputDecoration(
-          contentPadding: icon != null
-              ? const EdgeInsets.symmetric(vertical: 16)
-              : const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+          contentPadding: icon != null ? const EdgeInsets.symmetric(vertical: 16) : const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
           prefixIcon: icon != null
               ? SvgPicture.asset(
                   'assets/images/$icon.svg',
-            fit: BoxFit.scaleDown,
+                  fit: BoxFit.scaleDown,
                 )
               : null,
           suffixIcon: isPassword
@@ -70,6 +68,7 @@ class CustomTextFormField extends StatelessWidget {
                 )
               : null,
           hintText: hint,
+          errorMaxLines: 2,
           errorStyle: TextStyle(
             fontWeight: FontWeight.w300,
             color: MyColors.red,

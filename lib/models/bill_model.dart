@@ -19,6 +19,8 @@ class OneBillModel {
   String? buyerCity;
   dynamic buyerLongitude;
   dynamic buyerLatitude;
+  bool? isRequested;
+  bool? isDelivered;
 
   OneBillModel.fromJson(Map<String, dynamic> json, String billId) {
     id = billId;
@@ -38,5 +40,7 @@ class OneBillModel {
     buyerCity = json['buyerCity'];
     buyerLongitude = json['buyerLongitude'];
     buyerLatitude = json['buyerLatitude'];
+    isRequested = json['isRequested'];
+    isDelivered = json['isDelivered'];
   }
 }

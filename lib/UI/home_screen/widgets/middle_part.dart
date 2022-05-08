@@ -5,6 +5,8 @@ import 'package:marketing_admin_panel/UI/c_offers_tab/c_offers_tab.dart';
 import 'package:marketing_admin_panel/UI/categories_tab/categories_tab.dart';
 import 'package:marketing_admin_panel/UI/currencies/currencies_tab.dart';
 import 'package:marketing_admin_panel/UI/offers_tab/offers_tab.dart';
+import 'package:marketing_admin_panel/UI/packages_tab/packages_tab.dart';
+import 'package:marketing_admin_panel/UI/stories_tab/stories_tab.dart';
 import 'package:marketing_admin_panel/UI/users_company_tab/companies_tab.dart';
 import 'package:marketing_admin_panel/UI/users_person_tab/users_tab.dart';
 import 'package:marketing_admin_panel/utils/colors.dart';
@@ -29,6 +31,8 @@ class _MiddlePartState extends State<MiddlePart> {
     COffersTab(),
     CurrenciesTab(),
     BillsRequests(),
+    PackagesTab(),
+    StoriesTab(),
   ];
   
   @override

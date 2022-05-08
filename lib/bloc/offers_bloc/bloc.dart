@@ -38,7 +38,8 @@ class OfferBloc extends Bloc<OfferEvents, OfferStates> {
         } catch (e) {
           emit(FetchOfferFiledState('Error, please try again'));
         }
-      } else if (event is FetchMoreOffers && !alreadyFetchingMoreOffers) {
+      }
+      else if (event is FetchMoreOffers && !alreadyFetchingMoreOffers) {
         alreadyFetchingMoreOffers = true;
         emit(FetchMoreOfferLoadingState());
         try {

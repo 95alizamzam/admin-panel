@@ -86,7 +86,7 @@ class _PostOfferState extends State<PostOffer> {
                 style: Constants.TEXT_STYLE4,
               ),
             );
-          else{
+          else {
             _lastFetchedOfferId = postOffers.last.id!;
             return Container(
               padding: const EdgeInsets.only(top: 12),
@@ -242,22 +242,22 @@ class _PostOfferState extends State<PostOffer> {
                           );
                         },
                         separatorBuilder: (ctx, index) => const SizedBox(
-                          height: 8,
-                        ),
+                              height: 8,
+                            ),
                         itemCount: postOffers.length),
                   ),
                   state is FetchMoreOfferLoadingState
                       ? RefreshProgressIndicator(
-                    color: MyColors.secondaryColor,
-                  )
+                          color: MyColors.secondaryColor,
+                        )
                       : state is FetchMoreOfferFiledState
-                      ? Center(
-                    child: Text(
-                      state.message,
-                      style: Constants.TEXT_STYLE6,
-                    ),
-                  )
-                      : Container(),
+                          ? Center(
+                              child: Text(
+                                state.message,
+                                style: Constants.TEXT_STYLE6,
+                              ),
+                            )
+                          : Container(),
                 ],
               ),
             );

@@ -4,19 +4,12 @@ import 'package:flutter/painting.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:marketing_admin_panel/UI/shared_widgets/country_picker.dart';
-import 'package:marketing_admin_panel/UI/shared_widgets/custom_button.dart';
-import 'package:marketing_admin_panel/UI/shared_widgets/custom_filter_container.dart';
 import 'package:marketing_admin_panel/bloc/users_bloc/bloc.dart';
 import 'package:marketing_admin_panel/bloc/users_bloc/events.dart';
-import 'package:marketing_admin_panel/helper.dart';
 import 'package:marketing_admin_panel/utils/colors.dart';
 import 'package:marketing_admin_panel/utils/constants.dart';
 import 'package:marketing_admin_panel/utils/enums.dart';
 import 'package:marketing_admin_panel/utils/modal_sheets.dart';
-import 'package:marketing_admin_panel/utils/navigator/navigator_imp.dart';
-
-import 'gender_picker.dart';
 
 class SearchWidget extends StatefulWidget {
   final UserType userType;
@@ -118,7 +111,7 @@ class _SearchWidgetState extends State<SearchWidget> {
         ),
         IconButton(
           onPressed: () {
-            ModalSheets().showUsersFilter(context, widget.userType);
+            ModalSheets().showUsersFilter(context, 'users', userType: widget.userType);
           },
           icon: SvgPicture.asset(
             'assets/images/filter.svg',

@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:marketing_admin_panel/UI/bills_requests/widgets/requested_bill_item.dart';
+import 'package:marketing_admin_panel/UI/bills_requests/widgets/bills_expansion_list.dart';
 import 'package:marketing_admin_panel/bloc/bills_bloc/bills_bloc.dart';
 import 'package:marketing_admin_panel/bloc/bills_bloc/events.dart';
 import 'package:marketing_admin_panel/bloc/bills_bloc/states.dart';
-import 'package:marketing_admin_panel/models/bill_model.dart';
 import 'package:marketing_admin_panel/utils/colors.dart';
 import 'package:marketing_admin_panel/utils/constants.dart';
 
@@ -27,15 +26,17 @@ class _BillsRequestsState extends State<BillsRequests> {
       padding: const EdgeInsets.only(right: 12, left: 12, top: 12),
       child: BlocConsumer<BillsBloc, BillState>(
         listener: (ctx, state){
-          if(state is DeleteBillRequestLoading)
+          if(state is DeleteBillRequestLoading || state is MarkBillAsDeliveredLoading)
             EasyLoading.show(status: 'Please wait..');
           else if(state is DeleteBillRequestFailed)
             EasyLoading.showError(state.message);
-          else if(state is DeleteBillRequestSucceed)
+          else if(state is MarkBillAsDeliveredFailed)
+            EasyLoading.showError(state.message);
+          else if(state is DeleteBillRequestSucceed || state is MarkBillAsDeliveredDone)
             EasyLoading.showSuccess('Done');
         },
         builder: (ctx, state) {
-          if (state is BillRequestsLoading)
+          if (state is BillRequestsLoading || state is BillInitialState)
             return Center(
                 child: CircularProgressIndicator(
                   color: MyColors.secondaryColor,
@@ -48,7 +49,7 @@ class _BillsRequestsState extends State<BillsRequests> {
               ),
             );
           else {
-            List<OneBillModel> requestedBills = context.read<BillsBloc>().requestedBills;
+            int undeliveredBills = context.read<BillsBloc>().getUnDeliveredBills();
             return Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -65,7 +66,7 @@ class _BillsRequestsState extends State<BillsRequests> {
                     CircleAvatar(
                       backgroundColor: MyColors.lightGrey,
                       child: Text(
-                        '${requestedBills.length}',
+                        '$undeliveredBills',
                         style: Constants.TEXT_STYLE9.copyWith(
                           color: MyColors.red,
                         ),
@@ -75,10 +76,13 @@ class _BillsRequestsState extends State<BillsRequests> {
                 ),
                 const SizedBox(height: 12,),
                 Expanded(
-                  child: ListView.separated(
-                    itemCount: requestedBills.length,
-                    separatorBuilder: (ctx, index) => const SizedBox(height: 12,),
-                    itemBuilder: (ctx, index) => RequestedBillItem(bill: requestedBills[index]),
+                  child: ListView(
+                    children: [
+                      BillsExpansionList(bills: context.read<BillsBloc>().getTodayBills(), text: 'Today'),
+                      BillsExpansionList(bills: context.read<BillsBloc>().getYesterdayBills(), text: 'Yesterday'),
+                      BillsExpansionList(bills: context.read<BillsBloc>().getWeekAgoBills(), text: 'Week ago'),
+                      BillsExpansionList(bills: context.read<BillsBloc>().getOlderBills(), text: 'older'),
+                    ],
                   ),
                 ),
               ],

@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:marketing_admin_panel/UI/currencies/widgets/add_currency_sheet.dart';
 import 'package:marketing_admin_panel/UI/shared_widgets/country_picker.dart';
 import 'package:marketing_admin_panel/UI/shared_widgets/custom_button.dart';
 import 'package:marketing_admin_panel/UI/shared_widgets/custom_filter_container.dart';
@@ -10,8 +11,12 @@ import 'package:marketing_admin_panel/bloc/category_bloc/events.dart';
 import 'package:marketing_admin_panel/bloc/category_bloc/states.dart';
 import 'package:marketing_admin_panel/bloc/offers_bloc/bloc.dart';
 import 'package:marketing_admin_panel/bloc/offers_bloc/events.dart';
+import 'package:marketing_admin_panel/bloc/packages_bloc/packages_bloc.dart';
+import 'package:marketing_admin_panel/bloc/packages_bloc/packages_events.dart';
 import 'package:marketing_admin_panel/bloc/points_bloc/points_bloc.dart';
 import 'package:marketing_admin_panel/bloc/points_bloc/points_events.dart';
+import 'package:marketing_admin_panel/bloc/stories_bloc/stories_bloc.dart';
+import 'package:marketing_admin_panel/bloc/stories_bloc/stories_events.dart';
 import 'package:marketing_admin_panel/bloc/users_bloc/bloc.dart';
 import 'package:marketing_admin_panel/bloc/users_bloc/events.dart';
 import 'package:provider/src/provider.dart';
@@ -23,8 +28,7 @@ import 'package:flutter/material.dart';
 import 'navigator/navigator_imp.dart';
 
 class ModalSheets {
-
-  void showUsersFilter(BuildContext context, UserType userType) {
+  void showUsersFilter(BuildContext context, String filterFor, {UserType? userType}) {
     //data to filter
     RangeValues val = RangeValues(0, 100);
     String gender = '';
@@ -56,7 +60,7 @@ class ModalSheets {
                   const SizedBox(
                     height: 12,
                   ),
-                  if (userType == UserType.User)
+                  if (userType != UserType.Company)
                     Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
@@ -64,11 +68,11 @@ class ModalSheets {
                         style: Constants.TEXT_STYLE4,
                       ),
                     ),
-                  if (userType == UserType.User)
+                  if (userType != UserType.Company)
                     const SizedBox(
                       height: 8,
                     ),
-                  if (userType == UserType.User)
+                  if (userType != UserType.Company)
                     RangeSlider(
                       labels: RangeLabels(val.start.ceil().toString(), val.end.ceil().toString()),
                       divisions: 100,
@@ -97,7 +101,7 @@ class ModalSheets {
                   const SizedBox(
                     height: 8,
                   ),
-                  if (userType == UserType.User)
+                  if (userType != UserType.Company)
                     GenderPicker(
                       onSaved: (c) {},
                       onChanged: (pickedGender) {
@@ -109,7 +113,10 @@ class ModalSheets {
                   ),
                   CustomButton(
                     ontap: () {
-                      context.read<UserBloc>().add(FilterUsers(val.start, val.end, gender, countries, userType));
+                      if(filterFor == 'users')
+                        context.read<UserBloc>().add(FilterUsers(val.start, val.end, gender, countries, userType!));
+                      else
+                        context.read<StoriesBloc>().add(FilterStories(val.start, val.end, gender, countries));
                       NavigatorImpl().pop();
                     },
                     buttonLabel: 'Submit',
@@ -357,66 +364,63 @@ class ModalSheets {
                     GestureDetector(
                       onTap: () async {
                         status = await showModalBottomSheet<String>(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(16),
-                              topRight: Radius.circular(16),
-                            ),
-                          ),
-                          context: context,
-                          builder: (ctx) => SafeArea(
-                            child: Container(
-                              child: Wrap(
-                                children: <Widget>[
-                                  ListTile(
-                                    title: Text(
-                                      'New',
-                                      style: Constants.TEXT_STYLE3,
-                                    ),
-                                    trailing: status ==
-                                        OfferStatus.New.toString()
-                                        ? Icon(
-                                      Icons.done,
-                                      size: 20,
-                                      color: MyColors.secondaryColor,
-                                    )
-                                        : CircleAvatar(
-                                      backgroundColor: Colors.transparent,
-                                    ),
-                                    onTap: () {
-                                      // setNewState(() {
-                                      //   status = OfferStatus.New.toString();
-                                      // });
-                                      NavigatorImpl().pop(result: OfferStatus.New.toString());
-                                    },
-                                  ),
-                                  ListTile(
-                                    title: Text(
-                                      'Used',
-                                      style: Constants.TEXT_STYLE3,
-                                    ),
-                                    trailing: status ==
-                                        OfferStatus.Used.toString()
-                                        ? Icon(
-                                      Icons.done,
-                                      size: 20,
-                                      color: MyColors.secondaryColor,
-                                    )
-                                        : CircleAvatar(
-                                      backgroundColor: Colors.transparent,
-                                    ),
-                                    onTap: () {
-                                      // setNewState(() {
-                                      //   status = OfferStatus.Used.toString();
-                                      // });
-                                      NavigatorImpl().pop(result: OfferStatus.Used.toString());
-                                    },
-                                  ),
-                                ],
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(16),
+                                topRight: Radius.circular(16),
                               ),
                             ),
-                          )
-                        );
+                            context: context,
+                            builder: (ctx) => SafeArea(
+                                  child: Container(
+                                    child: Wrap(
+                                      children: <Widget>[
+                                        ListTile(
+                                          title: Text(
+                                            'New',
+                                            style: Constants.TEXT_STYLE3,
+                                          ),
+                                          trailing: status == OfferStatus.New.toString()
+                                              ? Icon(
+                                                  Icons.done,
+                                                  size: 20,
+                                                  color: MyColors.secondaryColor,
+                                                )
+                                              : CircleAvatar(
+                                                  backgroundColor: Colors.transparent,
+                                                ),
+                                          onTap: () {
+                                            // setNewState(() {
+                                            //   status = OfferStatus.New.toString();
+                                            // });
+                                            NavigatorImpl().pop(result: OfferStatus.New.toString());
+                                          },
+                                        ),
+                                        ListTile(
+                                          title: Text(
+                                            'Used',
+                                            style: Constants.TEXT_STYLE3,
+                                          ),
+                                          trailing: status == OfferStatus.Used.toString()
+                                              ? Icon(
+                                                  Icons.done,
+                                                  size: 20,
+                                                  color: MyColors.secondaryColor,
+                                                )
+                                              : CircleAvatar(
+                                                  backgroundColor: Colors.transparent,
+                                                ),
+                                          onTap: () {
+                                            // setNewState(() {
+                                            //   status = OfferStatus.Used.toString();
+                                            // });
+                                            NavigatorImpl().pop(result: OfferStatus.Used.toString());
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ));
                       },
                       child: CustomFilterContainer(
                         title: 'Status',
@@ -595,7 +599,300 @@ class ModalSheets {
             ));
   }
 
-  // showStatusPicker(BuildContext context, String status) {
-  //
-  // }
+  void showAddCurrencySheet(context) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topRight: Radius.circular(12),
+          topLeft: Radius.circular(12),
+        ),
+      ),
+      builder: (_) {
+        return AddCurrencySheet();
+      },
+    );
+  }
+
+  void showAddPackageSheet(context) {
+    GlobalKey<FormState> formKey = GlobalKey<FormState>();
+    Map<String, dynamic> packageData = {};
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topRight: Radius.circular(12),
+          topLeft: Radius.circular(12),
+        ),
+      ),
+      builder: (ctx) {
+        return Padding(
+          padding: const EdgeInsets.all(12),
+          child: Form(
+            key: formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  'Add Package',
+                  style: Constants.TEXT_STYLE4.copyWith(fontSize: 18),
+                ),
+                const SizedBox(
+                  height: 8,
+                ),
+                CustomTextFormField(
+                  hint: 'Package name',
+                  width: 300.0,
+                  validateInput: (userInput) {
+                    if(userInput == '')
+                      return 'Please enter a name';
+                    else return null;
+                  },
+                  saveInput: (userInput) {
+                    packageData['packageName'] = userInput;
+                  },
+                ),
+                const SizedBox(
+                  height: 8,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CustomTextFormField(
+                      hint: 'Expires in',
+                      width: 200.0,
+                      validateInput: (userInput){
+                        if(userInput!.isEmpty)
+                          return 'Please enter a value';
+                        else {
+                          try {
+                            int.parse(userInput);
+                            return null;
+                          } catch (e) {
+                            return 'Please enter a valid value';
+                          }
+                        }
+                      },
+                      saveInput: (userInput) {
+                        packageData['expires'] = int.parse(userInput);
+                      },
+                    ),
+                    const SizedBox(
+                      width: 8,
+                    ),
+                    CustomTextFormField(
+                      hint: 'Price',
+                      width: 200.0,
+                      validateInput: (userInput){
+                        if(userInput!.isEmpty)
+                          return 'Please enter a value';
+                        else {
+                          try {
+                            int.parse(userInput);
+                            return null;
+                          } catch (e) {
+                            return 'Please enter a valid value';
+                          }
+                        }
+                      },
+                      saveInput: (userInput) {
+                        packageData['price'] = int.parse(userInput);
+                      },
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 8,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CustomTextFormField(
+                      hint: 'Products',
+                      width: 150.0,
+                      validateInput: (userInput){
+                        if(userInput!.isEmpty)
+                          return 'Please enter a value';
+                        else {
+                          try {
+                            int.parse(userInput);
+                            return null;
+                          } catch (e) {
+                            return 'Please enter a valid value';
+                          }
+                        }
+                      },
+                      saveInput: (userInput) {
+                        packageData['products'] = int.parse(userInput);
+                      },
+                    ),
+                    const SizedBox(
+                      width: 8,
+                    ),
+                    CustomTextFormField(
+                      hint: 'Posts',
+                      width: 150.0,
+                      validateInput: (userInput){
+                        if(userInput!.isEmpty)
+                          return 'Please enter a value';
+                        else {
+                          try {
+                            int.parse(userInput);
+                            return null;
+                          } catch (e) {
+                            return 'Please enter a valid value';
+                          }
+                        }
+                      },
+                      saveInput: (userInput) {
+                        packageData['posts'] = int.parse(userInput);
+                      },
+                    ),
+                    const SizedBox(
+                      width: 8,
+                    ),
+                    CustomTextFormField(
+                      hint: 'Images',
+                      width: 150.0,
+                      validateInput: (userInput){
+                        if(userInput!.isEmpty)
+                          return 'Please enter a value';
+                        else {
+                          try {
+                            int.parse(userInput);
+                            return null;
+                          } catch (e) {
+                            return 'Please enter a valid value';
+                          }
+                        }
+                      },
+                      saveInput: (userInput) {
+                        packageData['images'] = int.parse(userInput);
+                      },
+                    ),
+                    const SizedBox(
+                      width: 8,
+                    ),
+                    CustomTextFormField(
+                      hint: 'Videos',
+                      width: 150.0,
+                      validateInput: (userInput){
+                        if(userInput!.isEmpty)
+                          return 'Please enter a value';
+                        else {
+                          try {
+                            int.parse(userInput);
+                            return null;
+                          } catch (e) {
+                            return 'Please enter a valid value';
+                          }
+                        }
+                      },
+                      saveInput: (userInput) {
+                        packageData['videos'] = int.parse(userInput);
+                      },
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 8,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CustomTextFormField(
+                      hint: 'Chat days',
+                      width: 150.0,
+                      validateInput: (userInput){
+                        if(userInput!.isEmpty)
+                          return 'Please enter a value';
+                        else {
+                          try {
+                            int.parse(userInput);
+                            return null;
+                          } catch (e) {
+                            return 'Please enter a valid value';
+                          }
+                        }
+                      },
+                      saveInput: (userInput) {
+                        packageData['chatInDays'] = int.parse(userInput);
+                      },
+                    ),
+                    const SizedBox(
+                      width: 8,
+                    ),
+                    CustomTextFormField(
+                      hint: 'Story days',
+                      width: 150.0,
+                      validateInput: (userInput){
+                        if(userInput!.isEmpty)
+                          return 'Please enter a value';
+                        else {
+                          try {
+                            int.parse(userInput);
+                            return null;
+                          } catch (e) {
+                            return 'Please enter a valid value';
+                          }
+                        }
+                      },
+                      saveInput: (userInput) {
+                        packageData['storyInDays'] = int.parse(userInput);
+                      },
+                    ),
+                    const SizedBox(
+                      width: 8,
+                    ),
+                    CustomTextFormField(
+                      hint: 'Story count',
+                      width: 150.0,
+                      validateInput: (userInput){
+                        if(userInput!.isEmpty)
+                          return 'Please enter a value';
+                        else {
+                          try {
+                            int.parse(userInput);
+                            return null;
+                          } catch (e) {
+                            return 'Please enter a valid value';
+                          }
+                        }
+                      },
+                      saveInput: (userInput) {
+                        packageData['storyCount'] = int.parse(userInput);
+                      },
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 12,
+                ),
+                CustomButton(
+                  ontap: () {
+                    if(formKey.currentState!.validate()){
+                      formKey.currentState!.save();
+                      ctx.read<PackagesBloc>().add(AddNewPackage(packageData));
+                      NavigatorImpl().pop();
+                    }
+                  },
+                  buttonLabel: 'Submit',
+                  padding: 12.0,
+                  radius: 15,
+                  color: MyColors.secondaryColor,
+                  labelColor: Colors.white,
+                  labelSize: 16,
+                  width: 200,
+                ),
+                Padding(padding: EdgeInsets.only(bottom: MediaQuery.of(ctx).viewInsets.bottom)),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
 }

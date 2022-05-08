@@ -6,6 +6,7 @@ import 'package:marketing_admin_panel/UI/offers_tab/post_details_screen.dart';
 import 'package:marketing_admin_panel/UI/offers_tab/product_details_screen.dart';
 import 'package:marketing_admin_panel/UI/offers_tab/video_details_screen.dart';
 import 'package:marketing_admin_panel/UI/splach_screen/splach_screen.dart';
+import 'package:marketing_admin_panel/UI/stories_tab/stories_detailes_screen.dart';
 import '../../UI/image_screen.dart';
 import 'package:marketing_admin_panel/UI/users_person_tab/user_details_screen.dart';
 import 'package:marketing_admin_panel/utils/navigator/named_navigator.dart';
@@ -65,6 +66,20 @@ class NavigatorImpl implements NamedNavigator {
             child: UserDetails(
               navigator: navigatorState,
               user: data['user'],
+            ),
+            type: PageTransitionType.bottomToTop,
+            duration: const Duration(milliseconds: 500),
+          );
+        }
+
+      case NamedRoutes.STORY_DETAILS_SCREEN:
+        {
+          final data = settings.arguments as Map<String, dynamic>;
+
+          return PageTransition(
+            child: StoryDetails(
+              navigator: navigatorState,
+              model: data['story'],
             ),
             type: PageTransitionType.bottomToTop,
             duration: const Duration(milliseconds: 500),

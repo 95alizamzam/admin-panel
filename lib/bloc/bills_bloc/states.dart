@@ -23,5 +23,12 @@ class DeleteBillRequestFailed extends BillState {
   DeleteBillRequestFailed(this.message);
 }
 
+class MarkBillAsDeliveredLoading extends BillState {}
 
+class MarkBillAsDeliveredDone extends BillState {}
 
+class MarkBillAsDeliveredFailed extends BillState {
+  String message;
+
+  MarkBillAsDeliveredFailed(this.message);
+}

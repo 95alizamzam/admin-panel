@@ -19,8 +19,7 @@ class BillsRepo {
             .collection('bills')
             .doc(billId)
             .get();
-        OneBillModel bill =
-            OneBillModel.fromJson(documentSnapshot.data()!, billId);
+        OneBillModel bill = OneBillModel.fromJson(documentSnapshot.data()!, billId);
         bills.add(bill);
       }
 
@@ -39,10 +38,27 @@ class BillsRepo {
     try {
       await firestore
           .collection('bills requests')
-          .where('billId', isEqualTo: billId)
-          .get()
-          .then((snapshot) {
-        for (var s in snapshot.docs) s.reference.delete();
+          .doc(billId)
+          .delete();
+
+    } catch (e) {
+      print('error is $e');
+      throw e;
+    }
+  }
+
+  Future<void> markBillAsDelivered(String billId) async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    try {
+
+      //get bill user id
+      final querySnapshot = await firestore.collection('bills requests').doc(billId).get();
+      final data = querySnapshot.data() as Map<String, dynamic>;
+      final userId = data['userId'];
+
+      //update is delivered
+      await firestore.collection('users').doc(userId).collection('bills').doc(billId).update({
+        'isDelivered': true,
       });
     } catch (e) {
       print('error is $e');

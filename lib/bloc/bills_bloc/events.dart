@@ -9,3 +9,9 @@ class DeleteBillRequest extends BillEvent {
 
   DeleteBillRequest(this.billId);
 }
+
+class MarkBillAsDelivered extends BillEvent{
+  String billId;
+
+  MarkBillAsDelivered(this.billId,);
+}

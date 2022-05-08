@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:marketing_admin_panel/utils/colors.dart';
@@ -15,14 +16,16 @@ class SideMenu extends StatefulWidget {
 }
 
 class _SideMenuState extends State<SideMenu> {
-  static const Map<String, String> drawerItems = {
-    'Users': 'person',
-    'Companies': 'person',
-    'Categories': 'category',
-    'Offers': 'offers',
-    'C.Offers': 'offers',
-    'Currencies': 'offers',
-    'Bills Requests': 'bill',
+  static Map<String, Widget> drawerItems = {
+    'Users': SvgPicture.asset('assets/images/person.svg', color: Colors.white, fit: BoxFit.scaleDown,),
+    'Companies':  SvgPicture.asset('assets/images/person.svg', color: Colors.white, fit: BoxFit.scaleDown,),
+    'Categories':  SvgPicture.asset('assets/images/category.svg', color: Colors.white, fit: BoxFit.scaleDown,),
+    'Offers':  SvgPicture.asset('assets/images/offers.svg', color: Colors.white, fit: BoxFit.scaleDown,),
+    'C.Offers':  SvgPicture.asset('assets/images/offers.svg', color: Colors.white, fit: BoxFit.scaleDown,),
+    'Currencies': Icon(CupertinoIcons.money_dollar_circle, color: Colors.white,),
+    'Bills Requests': Icon(Icons.description, color: Colors.white,),
+    'Packages': SvgPicture.asset('assets/images/offers.svg', color: Colors.white, fit: BoxFit.scaleDown,),
+    'Stories': SvgPicture.asset('assets/images/story.svg', color: Colors.white, fit: BoxFit.scaleDown,),
   };
   int selectedIndex = 0;
 
@@ -64,7 +67,7 @@ class _SideMenuState extends State<SideMenu> {
                     ),
                     leading: CircleAvatar(
                       backgroundColor: Colors.transparent,
-                      child: SvgPicture.asset('assets/images/${drawerItems.values.toList()[index]}.svg', color: Colors.white, fit: BoxFit.scaleDown,),
+                      child: drawerItems.values.toList()[index],
                     ),
                     onTap: () {
                       setState(() {

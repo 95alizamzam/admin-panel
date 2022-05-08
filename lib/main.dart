@@ -8,7 +8,9 @@ import 'package:marketing_admin_panel/bloc/bills_bloc/bills_bloc.dart';
 import 'package:marketing_admin_panel/bloc/currencies_bloc/currencies_bloc.dart';
 import 'package:marketing_admin_panel/bloc/most_users_bloc/bloc.dart';
 import 'package:marketing_admin_panel/bloc/offers_bloc/bloc.dart';
+import 'package:marketing_admin_panel/bloc/packages_bloc/packages_bloc.dart';
 import 'package:marketing_admin_panel/bloc/points_bloc/points_bloc.dart';
+import 'package:marketing_admin_panel/bloc/stories_bloc/stories_bloc.dart';
 import 'package:marketing_admin_panel/locator.dart';
 import 'package:marketing_admin_panel/utils/colors.dart';
 import 'package:marketing_admin_panel/utils/navigator/named_routes.dart';
@@ -50,6 +52,8 @@ class MyApp extends StatelessWidget {
         BlocProvider<CurrenciesBloc>(create: (context) => CurrenciesBloc()),
         BlocProvider<BillsBloc>(create: (context) => BillsBloc()),
         BlocProvider<PointsBloc>(create: (context) => PointsBloc()),
+        BlocProvider<PackagesBloc>(create: (context) => PackagesBloc()),
+        BlocProvider<StoriesBloc>(create: (context) => StoriesBloc()),
       ],
       child: MaterialApp(
         title: 'Marketing Admin Panel',

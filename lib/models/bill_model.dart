@@ -22,25 +22,42 @@ class OneBillModel {
   bool? isRequested;
   bool? isDelivered;
 
-  OneBillModel.fromJson(Map<String, dynamic> json, String billId) {
+  //user data
+  String? userName;
+  String? userEmail;
+  String? userPhoneNumber;
+  String? userCountry;
+  String? userCity;
+  dynamic userLongitude;
+  dynamic userLatitude;
+
+  OneBillModel.fromJson(Map<String, dynamic> billMap, Map<String, dynamic> userMap, String billId) {
+    userName = userMap['userName'] ?? '';
+    userEmail = userMap['email'] ?? '';
+    userPhoneNumber = userMap['phoneNumber'] ?? '';
+    userCountry = userMap['country'] ?? '';
+    userCity = userMap['city'] ?? '';
+    userLongitude = userMap['longitude'] ?? 0;
+    userLatitude = userMap['latitude'] ?? 0;
+
     id = billId;
-    date = (json['date'] as Timestamp).toDate();
-    amount = json['amount'];
-    productName = json['productName'];
-    productPrice = json['productPrice'];
-    productColor = Color(json['productColor']);
-    productSize = json['productSize'];
-    vat = json['vat'];
-    shippingCost = json['shippingCost'];
-    shipTo = json['shipTo'];
-    buyerName = json['buyerName'];
-    buyerEmail = json['buyerEmail'];
-    buyerPhoneNumber = json['buyerPhoneNumber'];
-    buyerCountry = json['buyerCountry'];
-    buyerCity = json['buyerCity'];
-    buyerLongitude = json['buyerLongitude'];
-    buyerLatitude = json['buyerLatitude'];
-    isRequested = json['isRequested'];
-    isDelivered = json['isDelivered'];
+    date = (billMap['date'] as Timestamp).toDate();
+    amount = billMap['amount'];
+    productName = billMap['productName'];
+    productPrice = billMap['productPrice'];
+    productColor = Color(billMap['productColor']);
+    productSize = billMap['productSize'];
+    vat = billMap['vat'];
+    shippingCost = billMap['shippingCost'];
+    shipTo = billMap['shipTo'];
+    buyerName = billMap['buyerName'];
+    buyerEmail = billMap['buyerEmail'];
+    buyerPhoneNumber = billMap['buyerPhoneNumber'];
+    buyerCountry = billMap['buyerCountry'];
+    buyerCity = billMap['buyerCity'];
+    buyerLongitude = billMap['buyerLongitude'];
+    buyerLatitude = billMap['buyerLatitude'];
+    isRequested = billMap['isRequested'];
+    isDelivered = billMap['isDelivered'];
   }
 }

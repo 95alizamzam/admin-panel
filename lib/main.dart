@@ -30,7 +30,7 @@ void main() async {
       statusBarBrightness: Brightness.light,
     ),
   );
-  SystemChrome.setPreferredOrientations([
+  await SystemChrome.setPreferredOrientations([
     DeviceOrientation.landscapeRight,
     DeviceOrientation.landscapeLeft,
   ]);

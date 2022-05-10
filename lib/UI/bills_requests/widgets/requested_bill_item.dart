@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:geocoding/geocoding.dart';
@@ -10,7 +11,6 @@ import 'package:marketing_admin_panel/utils/constants.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:marketing_admin_panel/utils/navigator/navigator_imp.dart';
 import 'package:provider/src/provider.dart';
-
 import '../../../helper.dart';
 
 class RequestedBillItem extends StatefulWidget {
@@ -79,8 +79,112 @@ class _RequestedBillItemState extends State<RequestedBillItem> {
               ),
           ],
         ),
+        iconColor: MyColors.secondaryColor,
+        collapsedIconColor: MyColors.grey,
         childrenPadding: const EdgeInsets.all(8),
         children: [
+          Align(alignment: Alignment.centerLeft, child: Text('Customer Info', style: Constants.TEXT_STYLE4.copyWith(fontWeight: FontWeight.w500),),),
+          const SizedBox(
+            height: 12,
+          ),
+          Row(
+            children: [
+              Expanded(
+                child: Row(
+                  children: [
+                    Text(
+                      'Customer name ',
+                      style: Constants.TEXT_STYLE1.copyWith(color: MyColors.secondaryColor),
+                    ),
+                    Text(
+                      '${widget.bill.userName!}',
+                      style: Constants.TEXT_STYLE1,
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: Row(
+                  children: [
+                    Text(
+                      'Customer number ',
+                      style: Constants.TEXT_STYLE1.copyWith(color: MyColors.secondaryColor),
+                    ),
+                    Text(
+                      '${widget.bill.userPhoneNumber}',
+                      style: Constants.TEXT_STYLE1,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(
+            height: 8,
+          ),
+          Row(
+            children: [
+              Expanded(
+                flex: 2,
+                child: Row(
+                  children: [
+                    Text(
+                      'Customer email ',
+                      style: Constants.TEXT_STYLE1.copyWith(color: MyColors.secondaryColor),
+                    ),
+                    Expanded(
+                      child: Text(
+                        '${widget.bill.userEmail!}',
+                        style: Constants.TEXT_STYLE1,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                flex: 1,
+                child: Row(
+                  children: [
+                    Text(
+                      'Country ',
+                      style: Constants.TEXT_STYLE1.copyWith(color: MyColors.secondaryColor),
+                    ),
+                    Text(
+                      '${widget.bill.userCountry}',
+                      style: Constants.TEXT_STYLE1,
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                flex: 1,
+                child: Row(
+                  children: [
+                    Text(
+                      'City ',
+                      style: Constants.TEXT_STYLE1.copyWith(color: MyColors.secondaryColor),
+                    ),
+                    Text(
+                      '${widget.bill.userCity}',
+                      style: Constants.TEXT_STYLE1,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(
+            height: 8,
+          ),
+          if (widget.bill.userLatitude != 0 && widget.bill.userLongitude != 0)
+            AddressListTile(longitude: widget.bill.userLongitude, latitude: widget.bill.userLatitude, text: 'Customer address'),
+          const SizedBox(
+            height: 12,
+          ),
+          Align(alignment: Alignment.centerLeft, child: Text('Product Info', style: Constants.TEXT_STYLE4.copyWith(fontWeight: FontWeight.w500),),),
+          const SizedBox(
+            height: 12,
+          ),
           Row(
             children: [
               Expanded(
@@ -197,7 +301,11 @@ class _RequestedBillItemState extends State<RequestedBillItem> {
             ],
           ),
           const SizedBox(
-            height: 8,
+            height: 12,
+          ),
+          Align(alignment: Alignment.centerLeft, child: Text('Buyer Info', style: Constants.TEXT_STYLE4.copyWith(fontWeight: FontWeight.w500),),),
+          const SizedBox(
+            height: 12,
           ),
           Row(
             children: [
@@ -289,7 +397,9 @@ class _RequestedBillItemState extends State<RequestedBillItem> {
             height: 8,
           ),
           if (widget.bill.buyerLatitude != 0 && widget.bill.buyerLongitude != 0)
-            AddressListTile(longitude: widget.bill.buyerLongitude, latitude: widget.bill.buyerLatitude),
+            AddressListTile(longitude: widget.bill.buyerLongitude, latitude: widget.bill.buyerLatitude, text: 'Buyer address',),
+
+          //action
           if (!widget.bill.isDelivered!)
             Align(
               alignment: Alignment.bottomRight,
@@ -398,8 +508,9 @@ class _RequestedBillItemState extends State<RequestedBillItem> {
 
 class AddressListTile extends StatefulWidget {
   final latitude, longitude;
+  final String text;
 
-  AddressListTile({required this.longitude, required this.latitude});
+  AddressListTile({required this.longitude, required this.latitude, required this.text});
 
   @override
   _AddressListTileState createState() => _AddressListTileState();
@@ -417,7 +528,7 @@ class _AddressListTileState extends State<AddressListTile> {
           Placemark address = snapshot.data as Placemark;
           return ListTile(
             title: Text(
-              'Buyer address',
+              widget.text,
               style: Constants.TEXT_STYLE1.copyWith(color: MyColors.secondaryColor),
             ),
             subtitle: Column(

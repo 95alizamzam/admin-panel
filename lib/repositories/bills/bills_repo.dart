@@ -13,13 +13,15 @@ class BillsRepo {
         String billId = q.data()['billId'];
         String userId = q.data()['userId'];
 
+        final userDocumentSnapshot = await firestore.collection('users').doc(userId).get();
+
         final documentSnapshot = await firestore
             .collection('users')
             .doc(userId)
             .collection('bills')
             .doc(billId)
             .get();
-        OneBillModel bill = OneBillModel.fromJson(documentSnapshot.data()!, billId);
+        OneBillModel bill = OneBillModel.fromJson(documentSnapshot.data()!, userDocumentSnapshot.data()!, billId);
         bills.add(bill);
       }
 
